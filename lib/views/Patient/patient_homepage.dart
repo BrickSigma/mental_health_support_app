@@ -13,8 +13,19 @@ class _PatientHomepageState extends State<PatientHomepage> {
       _selectedIndex = index;
     });
   }
+
   @override
-  Widget build(BuildContext context){
-    
+  Widget build(BuildContext context) {
+    // Defining the color variables
+    final orange = Colors.orange[600]!;
+    final lightorange = Colors.orange[100]!;
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor:Colors.white,
+      ),
+    )
+
   }
 }
