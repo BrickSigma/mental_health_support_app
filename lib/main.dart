@@ -3,6 +3,7 @@ import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/user_model.dart';
 import 'package:mental_health_support_app/views/app/app.dart';
 import 'package:mental_health_support_app/views/login/login.dart';
+import 'package:mental_health_support_app/views/Patient/mood_tracking.dart';
 import 'package:mental_health_support_app/views/login/verify_account.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -51,6 +52,9 @@ class MainApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
+      routes: {
+        '/mood_tracking':(context) => const MoodTracking(),
+      },
       home: Consumer<LoginProvider>(
         builder: (context, auth, child) {
           return !auth.loggedIn

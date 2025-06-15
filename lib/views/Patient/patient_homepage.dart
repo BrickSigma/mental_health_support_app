@@ -18,7 +18,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
   Widget build(BuildContext context) {
     // Defining the color variables
     final orange = Colors.orange[600]!;
-    final lightorange = Colors.orange[100]!;
+    //final lightorange = Colors.orange[100]!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -52,11 +52,11 @@ class _PatientHomePageState extends State<PatientHomePage> {
             //Mood Tracking
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '\mood_tracking.dart');
+                Navigator.pushNamed(context, '/mood_tracking');
               },
               child: Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18)
+                  borderRadius: BorderRadius.circular(18),
                 ),
                 elevation: 5,
                 color: orange,
@@ -66,11 +66,14 @@ class _PatientHomePageState extends State<PatientHomePage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('MOOD TRACKING',
+                      const Text(
+                        'MOOD TRACKING',
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18)),
+                        fontSize: 18,
+                        ),
+                        ),
                         const SizedBox(height: 8),
                         const Padding(padding: EdgeInsets.symmetric(horizontal: 12),
                         child: Text('Track your moods daily', textAlign: TextAlign.center,
