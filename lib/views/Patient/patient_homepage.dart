@@ -34,7 +34,8 @@ class _PatientHomepageState extends State<PatientHomepage> {
           IconButton(
             icon: const Icon(Icons.notifications_none,
             color: Colors.black,
-            size: 28,),
+            size: 28),
+            onPressed: () {},
           ),
         ],
 

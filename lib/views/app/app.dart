@@ -1,6 +1,6 @@
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/user_model.dart';
-import 'package:mental_health_support_app/views/app/home.dart';
+import 'package:mental_health_support_app/views/Patient/patient_homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +88,7 @@ class AppNavigation extends StatefulWidget {
 }
 
 class _AppNavigationState extends State<AppNavigation> {
-  final List<Widget> _pages = [HomeView()];
+  final List<Widget> _pages = [PatientHomepage()];
   final int _pageIndex = 0;
 
   @override
