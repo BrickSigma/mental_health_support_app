@@ -41,7 +41,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
               color: Colors.black,
               size: 28,
             ),
-            onPressed: () {},
+            onPressed: () => Navigator.pushNamed(context, '/Notifications'),
           ),
         ],
       ),
