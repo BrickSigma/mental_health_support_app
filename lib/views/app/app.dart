@@ -88,7 +88,7 @@ class AppNavigation extends StatefulWidget {
 }
 
 class _AppNavigationState extends State<AppNavigation> {
-  final List<Widget> _pages = [PatientHomepage()];
+  final List<Widget> _pages = [PatientHomePage()];
   final int _pageIndex = 0;
 
   @override

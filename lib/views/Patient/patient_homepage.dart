@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class PatientHomepage extends StatefulWidget {
-  const PatientHomepage({super.key});
+class PatientHomePage extends StatefulWidget {
+  const PatientHomePage({super.key});
   @override
-  State<PatientHomepage> createState() => _PatientHomepageState();
+  State<PatientHomePage> createState() => _PatientHomePageState();
 }
 
-class _PatientHomepageState extends State<PatientHomepage> {
+class _PatientHomePageState extends State<PatientHomePage> {
   int _selectedIndex = 0;
   void _whenNavisTapped(int index) {
     setState(() {
@@ -25,21 +25,40 @@ class _PatientHomepageState extends State<PatientHomepage> {
         elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
-        title: const Text('HOME',
-        style: TextStyle(color: Colors.black,
-        fontWeight: FontWeight.bold,
-        fontSize: 22)),
+        title: const Text(
+          'HOME',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none,
-            color: Colors.black,
-            size: 28),
+            icon: const Icon(
+              Icons.notifications_none,
+              color: Colors.black,
+              size: 28,
+            ),
             onPressed: () {},
           ),
         ],
-
       ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(24, 36, 24, 0),
+        child: Column(
+          children: [
+            //Mood Tracking
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '\mood_tracking.dart');
+              },
+            ),
+          ],
+        ),
+      ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _whenNavisTapped,
@@ -47,18 +66,23 @@ class _PatientHomepageState extends State<PatientHomepage> {
         unselectedItemColor: Colors.black45,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        items: const[
-          BottomNavigationBarItem(icon: Icon(Icons.home, size: 30,),
-          label: 'Home',
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, size: 30),
+            label: 'Home',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.search, size: 30,),
-          label: 'Search',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, size: 30),
+            label: 'Search',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person, size: 30,),
-          label: 'Profile',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, size: 30),
+            label: 'Profile',
           ),
-
-        ]
+        ],
+        backgroundColor: Colors.white,
+        elevation: 10,
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
