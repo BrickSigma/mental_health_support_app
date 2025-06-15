@@ -23,9 +23,15 @@ class _PatientHomepageState extends State<PatientHomepage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor:Colors.white,
-      ),
-    )
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: const Text('HOME',
+        style: TextStyle(color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontSize: 22)),
+        centerTitle: true,
 
+      ),
+    );
   }
 }
