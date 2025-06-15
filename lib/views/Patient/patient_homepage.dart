@@ -51,6 +51,13 @@ class _PatientHomepageState extends State<PatientHomepage> {
           BottomNavigationBarItem(icon: Icon(Icons.home, size: 30,),
           label: 'Home',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.search, size: 30,),
+          label: 'Search',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person, size: 30,),
+          label: 'Profile',
+          ),
+
         ]
       ),
     );
