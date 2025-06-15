@@ -54,6 +54,34 @@ class _PatientHomePageState extends State<PatientHomePage> {
               onTap: () {
                 Navigator.pushNamed(context, '\mood_tracking.dart');
               },
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18)
+                ),
+                elevation: 5,
+                color: orange,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 120,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('MOOD TRACKING',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18)),
+                        const SizedBox(height: 8),
+                        const Padding(padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: Text('Track your moods daily', textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontSize: 15 ),
+                          ),)
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),
