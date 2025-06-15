@@ -30,6 +30,13 @@ class _PatientHomepageState extends State<PatientHomepage> {
         fontWeight: FontWeight.bold,
         fontSize: 22)),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none,
+            color: Colors.black,
+            size: 28,),
+          ),
+        ],
 
       ),
     );
