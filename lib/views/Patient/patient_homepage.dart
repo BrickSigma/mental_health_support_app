@@ -40,6 +40,19 @@ class _PatientHomepageState extends State<PatientHomepage> {
         ],
 
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _whenNavisTapped,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.black45,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: const[
+          BottomNavigationBarItem(icon: Icon(Icons.home, size: 30,),
+          label: 'Home',
+          ),
+        ]
+      ),
     );
   }
 }
