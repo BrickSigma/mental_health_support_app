@@ -84,7 +84,7 @@ class _PatientHomePageState extends State<PatientHomePage> with SingleTickerProv
               ),
             const SizedBox(height: 20),
 
-            // Center the cards
+            //cards
             Expanded(
               child: Center(
                 child: SingleChildScrollView(
