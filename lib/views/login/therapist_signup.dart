@@ -1,26 +1,27 @@
 import 'package:mental_health_support_app/controllers/auth.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
+import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class SignupView extends StatefulWidget {
-  const SignupView({super.key});
+class TherapistSignupView extends StatefulWidget {
+  const TherapistSignupView({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  State<TherapistSignupView> createState() => _TherapistSignupViewState();
 }
 
-class _SignupViewState extends State<SignupView> {
+class _TherapistSignupViewState extends State<TherapistSignupView> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final TextEditingController _specialtyController = TextEditingController();
 
   /// Creates a new user account and verifies it.
   void createAccount(BuildContext context) async {
@@ -39,10 +40,11 @@ class _SignupViewState extends State<SignupView> {
             );
 
         // Save the user to the database.
-        await UserModel.createUserDocument(
+        await TherapistModel.createUserDocument(
           credentials.user!.uid,
           _userNameController.text,
           _emailController.text,
+          _specialtyController.text,
         );
 
         loginProvider.login(credentials.user!.emailVerified);
@@ -109,7 +111,7 @@ class _SignupViewState extends State<SignupView> {
                         controller: _userNameController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: "User Name",
+                          hintText: "User name",
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -172,6 +174,21 @@ class _SignupViewState extends State<SignupView> {
                         },
                       ),
                       SizedBox(height: 12),
+                      TextFormField(
+                        controller: _specialtyController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText:
+                              "Input field of specialty (e.g. Depression)",
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your specialty';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 12),
                       FilledButton(
                         onPressed: () => createAccount(context),
                         child: Text("Sign up"),
@@ -193,7 +210,7 @@ class _SignupViewState extends State<SignupView> {
                 SizedBox(height: 12),
                 GestureDetector(
                   onTap: () async {
-                    bool result = await googleSignIn(context);
+                    bool result = await googleSignIn(context, true);
                     if (result && context.mounted) {
                       Navigator.pop(context);
                     }

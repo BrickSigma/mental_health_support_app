@@ -1,6 +1,6 @@
 import 'package:mental_health_support_app/models/login_provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatelessWidget {
@@ -19,7 +19,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = Provider.of<UserModel>(context, listen: false);
+    UserInterface user = Provider.of<UserInterface>(context, listen: false);
     LoginProvider loginProvider = Provider.of(context, listen: false);
 
     return Scaffold(
@@ -34,6 +34,10 @@ class HomeView extends StatelessWidget {
                 Text(
                   _dailyMessage(user.userName),
                   style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                SizedBox(height: 12),
+                Text(
+                  user.userRole == UserRole.patient ? "Patient" : "Therapist",
                 ),
                 SizedBox(height: 12),
                 Text(
