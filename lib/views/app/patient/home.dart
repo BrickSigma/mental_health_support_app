@@ -1,10 +1,11 @@
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:provider/provider.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class PatientHomeView extends StatelessWidget {
+  const PatientHomeView({super.key});
 
   String _dailyMessage(String? username) {
     final currentTime = DateTime.now();
@@ -19,7 +20,7 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserInterface user = Provider.of<UserInterface>(context, listen: false);
+    UserInterface user = Provider.of<PatientModel>(context, listen: false);
     LoginProvider loginProvider = Provider.of(context, listen: false);
 
     return Scaffold(

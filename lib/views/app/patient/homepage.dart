@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/views/app/patient/find_therapist.dart';
+import 'package:mental_health_support_app/views/app/patient/journal.dart';
+import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
+import 'package:mental_health_support_app/views/app/patient/notifications.dart';
+import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
 import 'package:provider/provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
-import 'package:mental_health_support_app/views/Patient/find_therapist.dart';
-import 'package:mental_health_support_app/views/Patient/journal.dart';
-import 'package:mental_health_support_app/views/Patient/profile_page.dart';
-import 'package:mental_health_support_app/views/Patient/mood_tracking.dart';
-import 'package:mental_health_support_app/views/Patient/notifications.dart';
+import 'package:mental_health_support_app/models/patient_model.dart';
 
 class PatientHomePage extends StatefulWidget {
-  const PatientHomePage({Key? key}) : super(key: key);
+  const PatientHomePage({super.key});
 
   @override
   State<PatientHomePage> createState() => _PatientHomePageState();
@@ -55,8 +55,8 @@ class _PatientHomePageState extends State<PatientHomePage> {
     return hour < 12
         ? "Good morning, ${username ?? ""}"
         : hour < 18
-            ? "Good afternoon, ${username ?? ""}"
-            : "Good evening, ${username ?? ""}";
+        ? "Good afternoon, ${username ?? ""}"
+        : "Good evening, ${username ?? ""}";
   }
 
   @override
@@ -67,21 +67,24 @@ class _PatientHomePageState extends State<PatientHomePage> {
         elevation: 0,
         backgroundColor: Colors.white,
         title: const Text(
-          'HOME', 
+          'HOME',
           style: TextStyle(
-            color: Colors.black, 
-            fontWeight: FontWeight.bold, 
-            fontSize: 22
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none, color: Colors.black),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PatientsNotification()),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PatientsNotification(),
+                  ),
+                ),
           ),
         ],
       ),
@@ -89,21 +92,19 @@ class _PatientHomePageState extends State<PatientHomePage> {
         padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
         child: Column(
           children: [
-            Consumer<UserModel>(
-              builder: (context, user, _) => Text(
-                _dailyMessage(user.userName),
-                style: const TextStyle(
-                  fontSize: 20, 
-                  color: Colors.black87, 
-                  fontWeight: FontWeight.bold
-                ),
-              ),
+            Consumer<PatientModel>(
+              builder:
+                  (context, user, _) => Text(
+                    _dailyMessage(user.userName),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
             ),
             const SizedBox(height: 40),
-            const Text(
-              'Welcome to Akili Bora',
-              style: TextStyle(fontSize: 18),
-            ),
+            const Text('Welcome to Akili Bora', style: TextStyle(fontSize: 18)),
           ],
         ),
       ),
@@ -116,10 +117,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'HOME',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_emotions_outlined),
             label: 'MOOD',
@@ -128,14 +126,8 @@ class _PatientHomePageState extends State<PatientHomePage> {
             icon: Icon(Icons.search),
             label: 'THERAPISTS',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'JOURNAL',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'PROFILE',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'JOURNAL'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'PROFILE'),
         ],
       ),
     );

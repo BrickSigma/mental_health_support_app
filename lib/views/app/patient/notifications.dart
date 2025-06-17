@@ -5,11 +5,10 @@ class PatientsNotification extends StatefulWidget {
   @override
   State<PatientsNotification> createState() => _PatientsNotificationState();
 }
-class _PatientsNotificationState extends State<PatientsNotification>{
+
+class _PatientsNotificationState extends State<PatientsNotification> {
   @override
   Widget build(Object context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Placeholder();
   }
-
 }

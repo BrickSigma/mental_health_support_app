@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/views/app/patient/find_therapist.dart';
+import 'package:mental_health_support_app/views/app/patient/homepage.dart';
+import 'package:mental_health_support_app/views/app/patient/journal.dart';
+import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
 import 'package:provider/provider.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
-import 'package:mental_health_support_app/views/Patient/homepage.dart';
-import 'package:mental_health_support_app/views/Patient/mood_tracking.dart';
-import 'package:mental_health_support_app/views/Patient/find_therapist.dart';
-import 'package:mental_health_support_app/views/Patient/journal.dart';
+import 'package:mental_health_support_app/models/patient_model.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel>(context);
+    final user = Provider.of<PatientModel>(context, listen: false);
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -117,7 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildBody(UserModel user) {
+  Widget _buildBody(PatientModel user) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -132,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileHeader(UserModel user) {
+  Widget _buildProfileHeader(PatientModel user) {
     return Column(
       children: [
         CircleAvatar(
@@ -142,11 +142,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 15),
         Text(
-          user.userName ?? 'User',
+          user.userName,
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         Text(
-          user.email ?? 'No email provided',
+          user.email,
           style: const TextStyle(color: Colors.grey),
         ),
       ],

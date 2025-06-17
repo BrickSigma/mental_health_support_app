@@ -5,11 +5,10 @@ class MoodTracking extends StatefulWidget {
   @override
   State<MoodTracking> createState() => _MoodTrackingState();
 }
-class _MoodTrackingState extends State<MoodTracking>{
+
+class _MoodTrackingState extends State<MoodTracking> {
   @override
   Widget build(Object context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Placeholder();
   }
-
 }

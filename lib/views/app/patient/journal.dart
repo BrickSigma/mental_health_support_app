@@ -5,11 +5,10 @@ class Journal extends StatefulWidget {
   @override
   State<Journal> createState() => _JournalState();
 }
-class _JournalState extends State<Journal>{
+
+class _JournalState extends State<Journal> {
   @override
   Widget build(Object context) {
-    // TODO: implement build
-    throw UnimplementedError();
+    return const Placeholder();
   }
-
 }

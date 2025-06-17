@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mental_health_support_app/views/app/home.dart';
+import 'package:mental_health_support_app/views/app/therapist/home.dart';
 
 class TherapistApp extends StatefulWidget {
   const TherapistApp({super.key});
@@ -9,7 +9,7 @@ class TherapistApp extends StatefulWidget {
 }
 
 class _TherapistAppState extends State<TherapistApp> {
-  final List<Widget> _pages = [HomeView()];
+  final List<Widget> _pages = [TherapistHomeView()];
   int _pageIndex = 0;
 
   @override

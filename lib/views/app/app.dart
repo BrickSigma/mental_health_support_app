@@ -74,12 +74,12 @@ class _AppState extends State<App> {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData && snapshot.data!.userRole != UserRole.nonExistent) {
             if (snapshot.data!.userRole == UserRole.patient) {
-              child = ChangeNotifierProvider<UserInterface>.value(
+              child = ChangeNotifierProvider<PatientModel>.value(
                 value: snapshot.data!.patientModel!,
                 child: PatientApp(),
               );
             } else {
-              child = ChangeNotifierProvider<UserInterface>.value(
+              child = ChangeNotifierProvider<TherapistModel>.value(
                 value: snapshot.data!.therapistModel!,
                 child: TherapistApp(),
               );
