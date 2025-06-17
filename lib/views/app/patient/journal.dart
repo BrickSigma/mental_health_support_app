@@ -9,6 +9,9 @@ class Journal extends StatefulWidget {
 class _JournalState extends State<Journal> {
   @override
   Widget build(Object context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text("Journaling")),
+      body: Placeholder(),
+    );
   }
 }
