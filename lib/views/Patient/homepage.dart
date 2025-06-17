@@ -44,7 +44,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => Profile()),
+          MaterialPageRoute(builder: (context) => ProfilePage()),
         );
         break;
     }
@@ -100,12 +100,10 @@ class _PatientHomePageState extends State<PatientHomePage> {
               ),
             ),
             const SizedBox(height: 40),
-            // Add your home screen content here
             const Text(
-              'Welcome to your mental health support app',
+              'Welcome to Akili Bora',
               style: TextStyle(fontSize: 18),
             ),
-            // Add more home screen widgets as needed
           ],
         ),
       ),
