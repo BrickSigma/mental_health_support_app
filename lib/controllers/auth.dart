@@ -2,16 +2,18 @@
 /// signing in with Google, etc...
 library;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
+import 'package:mental_health_support_app/models/patient_model.dart';
+import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/widgets.dart';
+import 'package:mental_health_support_app/models/user_interface.dart';
+import 'package:prompt_dialog/prompt_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-/// Signs in a user using the Google API.
-Future<bool> googleSignIn(BuildContext context) async {
+/// Signs up a user using the Google API.
+Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
   try {
     LoginProvider loginState = Provider.of<LoginProvider>(
       context,
@@ -35,24 +37,102 @@ Future<bool> googleSignIn(BuildContext context) async {
     UserCredential credentials = await FirebaseAuth.instance
         .signInWithCredential(credential);
 
-    // Check if the user has registered before.
-    final db = FirebaseFirestore.instance;
-    DocumentSnapshot<Map<String, dynamic>> data =
-        await db.collection("users").doc(credentials.user!.uid).get();
+    UserRole userRole = await checkUserRole(credentials.user!.uid);
 
     // If no data exists for the user, add it to the database.
-    if (!data.exists) {
-      await UserModel.createUserDocument(
-        credentials.user!.uid,
-        credentials.user!.displayName ?? credentials.user!.email ?? "",
-        credentials.user!.email ?? "",
-      );
+    if (userRole == UserRole.nonExistent) {
+      if (isTherapist == null) {
+        if (!context.mounted) {
+          throw Exception("Context not mounted to show alert dialog!");
+        }
+        isTherapist = await showDialog<bool>(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text(
+                  "You have not created an account yet!",
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+                content: Text("Create either a patient or therapist account:"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(null),
+                    child: Text("Cancel"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text("Patient Account"),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text("Therapist Account"),
+                  ),
+                ],
+              ),
+        );
+
+        if (isTherapist == null) {
+          credentials.user?.delete();
+          return false;
+        }
+      }
+
+      if (isTherapist) {
+        String specialty = "";
+        if (!context.mounted) {
+          throw Exception("Context not mounted to show alert dialog!");
+        }
+
+        String? input = await prompt(
+          context,
+          title: Text("What is your specialty?"),
+          hintText: "Enter specialty (e.g. Depression/Anxiety)",
+          textOK: const Text("Continue"),
+          textCancel: const Text("Cancel sign up"),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter a value";
+            }
+            return null;
+          },
+        );
+
+        if (input == null || input.isEmpty) {
+          credentials.user?.delete();
+          return false;
+        }
+
+        specialty = input;
+
+        await TherapistModel.createUserDocument(
+          credentials.user!.uid,
+          credentials.user!.displayName ?? credentials.user!.email ?? "",
+          credentials.user!.email ?? "",
+          specialty,
+        );
+      } else if (userRole == UserRole.nonExistent) {
+        await PatientModel.createUserDocument(
+          credentials.user!.uid,
+          credentials.user!.displayName ?? credentials.user!.email ?? "",
+          credentials.user!.email ?? "",
+        );
+      }
     }
 
     loginState.login(credentials.user!.emailVerified);
 
     return true;
   } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Could not signup with Google!",
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
     return false;
   }
 }
