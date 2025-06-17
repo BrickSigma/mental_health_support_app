@@ -9,6 +9,8 @@ class FindTherapist extends StatefulWidget {
 class _FindTherapistState extends State<FindTherapist> {
   @override
   Widget build(Object context) {
-    return const Placeholder();
-  }
+return Scaffold(
+      appBar: AppBar(title: Text("Find therapist")),
+      body: Placeholder(),
+    );  }
 }

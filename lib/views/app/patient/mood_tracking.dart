@@ -9,6 +9,9 @@ class MoodTracking extends StatefulWidget {
 class _MoodTrackingState extends State<MoodTracking> {
   @override
   Widget build(Object context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text("Mood tracking")),
+      body: Placeholder(),
+    );
   }
 }

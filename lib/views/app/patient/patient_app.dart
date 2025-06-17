@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/views/app/patient/find_therapist.dart';
 import 'package:mental_health_support_app/views/app/patient/homepage.dart';
+import 'package:mental_health_support_app/views/app/patient/journal.dart';
+import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
+import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
 
 class PatientApp extends StatefulWidget {
   const PatientApp({super.key});
@@ -9,11 +13,42 @@ class PatientApp extends StatefulWidget {
 }
 
 class _PatientAppState extends State<PatientApp> {
-  final List<Widget> _pages = [PatientHomePage()];
+  final List<Widget> _pages = [
+    PatientHomePage(),
+    MoodTracking(),
+    FindTherapist(),
+    Journal(),
+    ProfilePage(),
+  ];
   int _pageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _pages[_pageIndex]);
+    return Scaffold(
+      body: _pages[_pageIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _pageIndex,
+        onTap:
+            (value) => setState(() {
+              _pageIndex = value;
+            }),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_emotions_outlined),
+            label: 'Mood',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Therapists',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Journal'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        ],
+      ),
+    );
   }
 }

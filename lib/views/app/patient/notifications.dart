@@ -9,6 +9,9 @@ class PatientsNotification extends StatefulWidget {
 class _PatientsNotificationState extends State<PatientsNotification> {
   @override
   Widget build(Object context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(title: Text("Patient notifications")),
+      body: Placeholder(),
+    );
   }
 }
