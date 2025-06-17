@@ -80,7 +80,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
             icon: const Icon(Icons.notifications_none, color: Colors.black),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => NotificationsPage()),
+              MaterialPageRoute(builder: (context) => PatientsNotification()),
             ),
           ),
         ],
