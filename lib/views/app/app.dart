@@ -1,6 +1,6 @@
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/user_model.dart';
-import 'package:mental_health_support_app/views/Patient/patient_homepage.dart';
+import 'package:mental_health_support_app/views/Patient/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

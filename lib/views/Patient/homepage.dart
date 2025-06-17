@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mental_health_support_app/models/user_model.dart';
+import 'package:mental_health_support_app/views/Patient/find_therapist.dart';
+import 'package:mental_health_support_app/views/Patient/journal.dart';
+import 'package:mental_health_support_app/views/Patient/profile_page.dart';
+import 'package:mental_health_support_app/views/Patient/mood_tracking.dart';
+import 'package:mental_health_support_app/views/Patient/notifications.dart';
 
 class PatientHomePage extends StatefulWidget {
   const PatientHomePage({Key? key}) : super(key: key);
