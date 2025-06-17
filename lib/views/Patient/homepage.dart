@@ -38,13 +38,13 @@ class _PatientHomePageState extends State<PatientHomePage> {
       case 3:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => JournalPage()),
+          MaterialPageRoute(builder: (context) => Journal()),
         );
         break;
       case 4:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfilePage()),
+          MaterialPageRoute(builder: (context) => Profile()),
         );
         break;
     }
