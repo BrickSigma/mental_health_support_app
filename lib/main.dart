@@ -53,12 +53,6 @@ class MainApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      routes: {
-        '/mood_tracking':(context) => const MoodTracking(),
-        '/Notifications':(context) => const PatientsNotification(),
-        '/login':(context) => const LoginView(),
-
-      },
       home: Consumer<LoginProvider>(
         builder: (context, auth, child) {
           return !auth.loggedIn
