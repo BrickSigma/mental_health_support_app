@@ -17,13 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
     LoginProvider loginProvider = Provider.of(context, listen: false);
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
+      appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -32,8 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.grey[200],
-                  child: const Icon(Icons.person, size: 60, color: Colors.grey),
+                  child: const Icon(Icons.person, size: 60),
                 ),
                 const SizedBox(height: 15),
                 Text(
@@ -43,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(user.email, style: const TextStyle(color: Colors.grey)),
+                Text(user.email),
               ],
             ),
             const SizedBox(height: 30),

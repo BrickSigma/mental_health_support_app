@@ -23,14 +23,10 @@ class _PatientHomePageState extends State<PatientHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white,
         title: const Text(
-          'HOME',
+          'Home',
           style: TextStyle(
-            color: Colors.black,
             fontWeight: FontWeight.bold,
             fontSize: 22,
           ),
@@ -38,7 +34,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_none, color: Colors.black),
+            icon: const Icon(Icons.notifications_none),
             onPressed:
                 () => Navigator.push(
                   context,
@@ -60,14 +56,13 @@ class _PatientHomePageState extends State<PatientHomePage> {
                       _dailyMessage(user.userName),
                       style: const TextStyle(
                         fontSize: 20,
-                        color: Colors.black87,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
               ),
               const SizedBox(height: 40),
               const Text(
-                'Welcome to Akili Bora',
+                'Welcome',
                 style: TextStyle(fontSize: 18),
               ),
             ],
