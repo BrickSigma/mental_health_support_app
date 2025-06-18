@@ -14,7 +14,34 @@ class _FindTherapistState extends State<FindTherapist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-    )
+      appBar: AppBar(
+        title: const Text("Find Therapist"),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search by name or specialty',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
