@@ -17,28 +17,72 @@ class TherapistDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('$username'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              radius: 40,
-              child: Text(username[0].toUpperCase()),
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Text(
+                  username.isNotEmpty ? username[0].toUpperCase() : '?',
+                  style: const TextStyle(
+                    fontSize: 36,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+
+            Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Name: $username',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    'Email: $email',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(height: 15),
+                  Text(
+                    'Specialty: $specialty',
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                ],
+              ),
+            ),
+            
+            const Spacer(),
+        
+            SizedBox(
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                  },
+                  child: const Text(
+                    'Book Session',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            Text('Name: $username', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 10),
-            Text('Email: $email', style: const TextStyle(fontSize: 18)),
-            const SizedBox(height: 10),
-            Text('Specialty: $specialty', style: const TextStyle(fontSize: 18)),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-              },
-              child: const Text('Book Session'),
-            ),
           ],
         ),
       ),
