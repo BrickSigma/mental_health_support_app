@@ -7,8 +7,8 @@ import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
+import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -83,7 +83,7 @@ Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
           throw Exception("Context not mounted to show alert dialog!");
         }
 
-        String? input = await prompt(
+        String? input = await prompt (
           context,
           title: Text("What is your specialty?"),
           hintText: "Enter specialty (e.g. Depression/Anxiety)",
