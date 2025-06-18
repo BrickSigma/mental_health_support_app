@@ -16,18 +16,29 @@ class TherapistDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Therapist Details'),
+        title: Text('$username'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: $username', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text('Email: $email', style: TextStyle(fontSize: 20)),
-            SizedBox(height: 10),
-            Text('Specialty: $specialty', style: TextStyle(fontSize: 20)),
+            CircleAvatar(
+              radius: 40,
+              child: Text(username[0].toUpperCase()),
+            ),
+            const SizedBox(height: 20),
+            Text('Name: $username', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text('Email: $email', style: const TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Text('Specialty: $specialty', style: const TextStyle(fontSize: 18)),
+            const Spacer(),
+            ElevatedButton(
+              onPressed: () {
+              },
+              child: const Text('Book Session'),
+            ),
           ],
         ),
       ),
