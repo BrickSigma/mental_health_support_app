@@ -73,6 +73,26 @@ class _FindTherapistState extends State<FindTherapist> {
               final data = therapist.data() as Map<String, dynamic>;
               final username = data['username'] ?? 'No name';
               final specialty = data['specialty'] ?? 'No specialty';
+
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    child: Text(
+                      username.isNotEmpty ? username[0].toUpperCase() : '?',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  ),
+                  title: Text(username),
+                  subtitle: Text(specialty),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                  },
+                ),
+              );
             },
           );
         },
