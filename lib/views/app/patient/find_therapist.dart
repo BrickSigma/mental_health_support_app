@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
 
 class FindTherapist extends StatefulWidget {
@@ -74,6 +75,7 @@ class _FindTherapistState extends State<FindTherapist> {
               final therapist = therapists[index];
               final data = therapist.data() as Map<String, dynamic>;
               final username = data['username'] ?? 'No name';
+              final email = data['email'] ?? 'No email';
               final specialty = data['specialty'] ?? 'No specialty';
 
               return Card(
@@ -92,6 +94,15 @@ class _FindTherapistState extends State<FindTherapist> {
                   subtitle: Text(specialty),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
+                    Navigator.push(context,
+                     MaterialPageRoute(
+                      builder:(context) => TherapistDetails(
+                        username: username,
+                        email: email,
+                        specialty: specialty,
+                      ),
+                      ),
+                      );
                   },
                 ),
               );
