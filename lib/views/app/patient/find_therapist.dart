@@ -16,7 +16,9 @@ class _FindTherapistState extends State<FindTherapist> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Find Therapist"),
+        title: const Text("Find Therapist",
+        style: TextStyle(fontWeight: FontWeight.bold),),
+        centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(60),
           child: Padding(
