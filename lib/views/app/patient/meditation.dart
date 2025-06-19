@@ -67,7 +67,7 @@ class _PlayerContainerState extends State<PlayerContainer> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSecondary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Padding(
