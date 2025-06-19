@@ -10,12 +10,12 @@ class MeditationPage extends StatefulWidget {
 
 class _MeditationPageState extends State<MeditationPage> {
   List<Soundtrack> players = [
-    Soundtrack("Wind", "assets/wind.mp3"),
-    Soundtrack("Sea", "assets/sea.mp3"),
-    Soundtrack("Forest", "assets/forest.mp3"),
-    Soundtrack("Midnight", "assets/midnight.mp3"),
-    Soundtrack("Fireplace", "assets/fireplace.mp3"),
-    Soundtrack("Coffee Shop", "assets/coffee_shop.mp3"),
+    Soundtrack("Wind", "soundtracks/wind.mp3"),
+    Soundtrack("Sea", "soundtracks/sea.mp3"),
+    Soundtrack("Forest", "soundtracks/forest.mp3"),
+    Soundtrack("Midnight", "soundtracks/midnight.mp3"),
+    Soundtrack("Fireplace", "soundtracks/fireplace.mp3"),
+    Soundtrack("Coffee Shop", "soundtracks/coffee_shop.mp3"),
   ];
 
   Future<void> loadPlayers() async {
