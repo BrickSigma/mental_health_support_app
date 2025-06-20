@@ -1,4 +1,5 @@
 import 'package:mental_health_support_app/controllers/soundtrack_controller.dart';
+import 'package:mental_health_support_app/models/journal_model.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
@@ -23,6 +24,7 @@ class _AppState extends State<App> {
       TherapistModel? therapistModel,
       PatientModel? patientModel,
       SoundtrackController? soundtrackController,
+      JournalModel? journalModel,
     })
   >?
   _data;
@@ -34,6 +36,7 @@ class _AppState extends State<App> {
       TherapistModel? therapistModel,
       PatientModel? patientModel,
       SoundtrackController? soundtrackController,
+      JournalModel? journalModel,
     })
   >
   _getUserData() async {
@@ -44,6 +47,7 @@ class _AppState extends State<App> {
     TherapistModel? therapistModel;
     PatientModel? patientModel;
     SoundtrackController? soundtrackController;
+    JournalModel? journalModel;
 
     if (userRole == UserRole.therapist) {
       therapistModel = TherapistModel();
@@ -53,6 +57,8 @@ class _AppState extends State<App> {
       await patientModel.loadUserData(FirebaseAuth.instance.currentUser!);
       soundtrackController = SoundtrackController();
       await soundtrackController.loadPlayers();
+      journalModel = JournalModel();
+      await journalModel.loadJournal(patientModel.userInfo!.uid);
     }
 
     return (
@@ -60,6 +66,7 @@ class _AppState extends State<App> {
       therapistModel: therapistModel,
       patientModel: patientModel,
       soundtrackController: soundtrackController,
+      journalModel: journalModel,
     );
   }
 
@@ -89,6 +96,9 @@ class _AppState extends State<App> {
                   ),
                   ChangeNotifierProvider.value(
                     value: snapshot.data!.soundtrackController!,
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: snapshot.data!.journalModel!,
                   ),
                 ],
                 child: PatientApp(),

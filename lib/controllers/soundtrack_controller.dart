@@ -18,8 +18,6 @@ class SoundtrackController extends ChangeNotifier {
     for (Soundtrack track in soundtracks) {
       await track.loadPlayer();
     }
-
-    return;
   }
 }
 
