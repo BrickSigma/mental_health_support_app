@@ -26,12 +26,10 @@ class _PatientAppState extends State<PatientApp> {
     Journal(),
     ProfilePage(),
   ];
-  int _pageIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pageIndex == 2 ? _getTherapyPage() : _pages[_pageIndex],
+      body: _pages[_pageIndex],
       bottomNavigationBar: BottomNavigationBar(
         useLegacyColorScheme: true,
         currentIndex: _pageIndex,
