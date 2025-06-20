@@ -38,7 +38,7 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
 
   /// Retrieves the user data from firebase.
   ///
-  /// `currentUser` - FirebaseAuth User instance
+  /// currentUser - FirebaseAuth User instance
   Future<void> loadUserData(User currentUser) async {
     final db = FirebaseFirestore.instance;
     DocumentSnapshot<Map<String, dynamic>> document =
