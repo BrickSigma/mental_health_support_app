@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
-import 'package:mental_health_support_app/models/therapist_model.dart';
+
 
 class FindTherapist extends StatefulWidget {
   const FindTherapist({super.key});
