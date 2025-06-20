@@ -41,14 +41,15 @@ class JournalModel extends ChangeNotifier {
 
   /// Upload a new journal entry to firebase.
   Future<void> addJournalEntry(JournalEntry entry) async {
-    entries.add(entry);
-
     final db = FirebaseFirestore.instance;
-    await db
+    final document = await db
         .collection("patients")
         .doc(_patientId)
         .collection("journals")
         .add(entry.toObject());
+
+    entry.id = document.id;
+    entries.add(entry);
 
     _sortEntries();
     notifyListeners();

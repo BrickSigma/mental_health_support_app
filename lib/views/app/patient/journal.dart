@@ -18,6 +18,17 @@ class _JournalState extends State<Journal> {
 
         return Scaffold(
           appBar: AppBar(title: const Text('Journal'), centerTitle: true),
+          floatingActionButton: FloatingActionButton(
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => JournalEntryFormPage(journalModel, false),
+                  ),
+                ),
+            child: Icon(Icons.add),
+          ),
           body: ListView.builder(
             itemCount: entries.length,
             itemBuilder: (context, index) {
@@ -36,7 +47,15 @@ class _JournalState extends State<Journal> {
                   ),
                 ),
                 child: GestureDetector(
-                  onTap: null,
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) =>
+                                  ViewJournalPage(journalModel, entries[index]),
+                        ),
+                      ),
                   child: Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 16.0,
@@ -70,6 +89,181 @@ class _JournalState extends State<Journal> {
           ),
         );
       },
+    );
+  }
+}
+
+/// Used for viewing a journal entry
+class ViewJournalPage extends StatefulWidget {
+  final JournalEntry entry;
+  final JournalModel journalModel;
+
+  const ViewJournalPage(this.journalModel, this.entry, {super.key});
+
+  @override
+  State<ViewJournalPage> createState() => _ViewJournalPageState();
+}
+
+class _ViewJournalPageState extends State<ViewJournalPage> {
+  late ValueNotifier<JournalEntry> entryNotifier;
+
+  @override
+  void initState() {
+    super.initState();
+    entryNotifier = ValueNotifier(widget.entry);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListenableBuilder(
+      listenable: entryNotifier,
+      builder: (context, child) {
+        JournalEntry entry = entryNotifier.value;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(entry.title),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                onPressed:
+                    () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => JournalEntryFormPage(
+                              widget.journalModel,
+                              true,
+                              entryNotifier: entryNotifier,
+                            ),
+                      ),
+                    ),
+                icon: Icon(Icons.edit),
+              ),
+            ],
+          ),
+          body: Padding(
+            padding: EdgeInsets.all(12),
+            child: Text(entry.contents),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Used for creating or editing a journal entry
+class JournalEntryFormPage extends StatefulWidget {
+  /// Indicates whether the entry is being created or edited.
+  final bool isEditing;
+
+  /// If `isEditing` is `true`, this must not be `null`.
+  final ValueNotifier<JournalEntry>? entryNotifier;
+
+  final JournalModel journalModel;
+
+  const JournalEntryFormPage(
+    this.journalModel,
+    this.isEditing, {
+    super.key,
+    this.entryNotifier,
+  });
+
+  @override
+  State<JournalEntryFormPage> createState() => _JournalEntryFormPageState();
+}
+
+class _JournalEntryFormPageState extends State<JournalEntryFormPage> {
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentsController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.isEditing && widget.entryNotifier != null) {
+      _titleController.text = widget.entryNotifier!.value.title;
+      _contentsController.text = widget.entryNotifier!.value.contents;
+    }
+  }
+
+  void _saveEntry(BuildContext context, JournalModel journalModel) {
+    JournalEntry updatedEntry = JournalEntry(
+      "",
+      _titleController.text,
+      widget.isEditing
+          ? widget.entryNotifier!.value.entryDateTime
+          : DateTime.now(),
+      _contentsController.text,
+    );
+    if (widget.isEditing) {
+      journalModel.updateJournalEntry(
+        widget.entryNotifier!.value.id,
+        updatedEntry,
+      );
+      widget.entryNotifier!.value = updatedEntry;
+    } else {
+      journalModel.addJournalEntry(updatedEntry);
+    }
+
+    Navigator.pop(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.isEditing ? "Edit Entry" : "Create Entry"),
+        centerTitle: true,
+        actions: [
+          TextButton(
+            onPressed: () => _saveEntry(context, widget.journalModel),
+            child: Text("Save"),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Journal Title",
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter some text";
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 12),
+                TextFormField(
+                  controller: _contentsController,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: "Contents",
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter some text";
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
