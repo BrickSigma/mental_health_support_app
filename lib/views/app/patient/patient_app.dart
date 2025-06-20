@@ -3,6 +3,7 @@ import 'package:mental_health_support_app/views/app/patient/find_therapist.dart'
 import 'package:mental_health_support_app/views/app/patient/homepage.dart';
 import 'package:mental_health_support_app/views/app/patient/journal.dart';
 import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
+import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
 
 class PatientApp extends StatefulWidget {
@@ -16,6 +17,7 @@ class _PatientAppState extends State<PatientApp> {
   final List<Widget> _pages = [
     PatientHomePage(),
     MoodTracking(),
+    MeditationPage(),
     FindTherapist(),
     Journal(),
     ProfilePage(),
@@ -27,6 +29,7 @@ class _PatientAppState extends State<PatientApp> {
     return Scaffold(
       body: _pages[_pageIndex],
       bottomNavigationBar: BottomNavigationBar(
+        useLegacyColorScheme: true,
         currentIndex: _pageIndex,
         onTap:
             (value) => setState(() {
@@ -40,6 +43,10 @@ class _PatientAppState extends State<PatientApp> {
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_emotions_outlined),
             label: 'Mood',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.music_note),
+            label: 'Meditate',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
