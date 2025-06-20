@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/views/app/patient/find_therapist.dart';
 import 'package:mental_health_support_app/views/app/patient/homepage.dart';
-import 'package:mental_health_support_app/views/app/patient/journal.dart';
+import 'package:mental_health_support_app/views/app/patient/journaling/journal.dart';
 import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
 import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
