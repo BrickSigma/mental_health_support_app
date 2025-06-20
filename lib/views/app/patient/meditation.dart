@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/controllers/soundtrack_controller.dart';
+import 'package:provider/provider.dart';
 
 class MeditationPage extends StatefulWidget {
   const MeditationPage({super.key});
@@ -9,46 +10,27 @@ class MeditationPage extends StatefulWidget {
 }
 
 class _MeditationPageState extends State<MeditationPage> {
-  List<Soundtrack> players = [
-    Soundtrack("Wind", "soundtracks/wind.mp3"),
-    Soundtrack("Sea", "soundtracks/sea.mp3"),
-    Soundtrack("Forest", "soundtracks/forest.mp3"),
-    Soundtrack("Midnight", "soundtracks/midnight.mp3"),
-    Soundtrack("Fireplace", "soundtracks/fireplace.mp3"),
-    Soundtrack("Coffee Shop", "soundtracks/coffee_shop.mp3"),
-  ];
-
-  Future<void> loadPlayers() async {
-    for (Soundtrack track in players) {
-      await track.loadPlayer();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    loadPlayers().then((value) {});
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Meditation Soundtracks"),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-        child: ListView.builder(
-          itemBuilder:
-              (context, index) => Padding(
-                padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
-                child: PlayerContainer(players[index]),
+    return Consumer<SoundtrackController>(
+      builder:
+          (context, controller, child) => Scaffold(
+            appBar: AppBar(
+              title: const Text("Meditation Soundtracks"),
+              centerTitle: true,
+            ),
+            body: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+              child: ListView.builder(
+                itemBuilder:
+                    (context, index) => Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 6, 0, 6),
+                      child: PlayerContainer(controller.soundtracks[index]),
+                    ),
+                itemCount: controller.soundtracks.length,
               ),
-          itemCount: players.length,
-        ),
-      ),
+            ),
+          ),
     );
   }
 }
