@@ -1,3 +1,5 @@
+import 'package:mental_health_support_app/controllers/soundtrack_controller.dart';
+import 'package:mental_health_support_app/models/journal_model.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
@@ -21,6 +23,8 @@ class _AppState extends State<App> {
       UserRole userRole,
       TherapistModel? therapistModel,
       PatientModel? patientModel,
+      SoundtrackController? soundtrackController,
+      JournalModel? journalModel,
     })
   >?
   _data;
@@ -31,6 +35,8 @@ class _AppState extends State<App> {
       UserRole userRole,
       TherapistModel? therapistModel,
       PatientModel? patientModel,
+      SoundtrackController? soundtrackController,
+      JournalModel? journalModel,
     })
   >
   _getUserData() async {
@@ -40,6 +46,8 @@ class _AppState extends State<App> {
 
     TherapistModel? therapistModel;
     PatientModel? patientModel;
+    SoundtrackController? soundtrackController;
+    JournalModel? journalModel;
 
     if (userRole == UserRole.therapist) {
       therapistModel = TherapistModel();
@@ -47,12 +55,18 @@ class _AppState extends State<App> {
     } else {
       patientModel = PatientModel();
       await patientModel.loadUserData(FirebaseAuth.instance.currentUser!);
+      soundtrackController = SoundtrackController();
+      await soundtrackController.loadPlayers();
+      journalModel = JournalModel();
+      await journalModel.loadJournal(patientModel.userInfo!.uid);
     }
 
     return (
       userRole: userRole,
       therapistModel: therapistModel,
       patientModel: patientModel,
+      soundtrackController: soundtrackController,
+      journalModel: journalModel,
     );
   }
 
@@ -72,10 +86,21 @@ class _AppState extends State<App> {
         LoginProvider loginProvider = Provider.of(context, listen: false);
 
         if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasData && snapshot.data!.userRole != UserRole.nonExistent) {
+          if (snapshot.hasData &&
+              snapshot.data!.userRole != UserRole.nonExistent) {
             if (snapshot.data!.userRole == UserRole.patient) {
-              child = ChangeNotifierProvider<PatientModel>.value(
-                value: snapshot.data!.patientModel!,
+              child = MultiProvider(
+                providers: [
+                  ChangeNotifierProvider.value(
+                    value: snapshot.data!.patientModel!,
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: snapshot.data!.soundtrackController!,
+                  ),
+                  ChangeNotifierProvider.value(
+                    value: snapshot.data!.journalModel!,
+                  ),
+                ],
                 child: PatientApp(),
               );
             } else {

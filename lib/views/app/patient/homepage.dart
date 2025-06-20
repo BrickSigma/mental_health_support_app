@@ -22,16 +22,11 @@ class _PatientHomePageState extends State<PatientHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    PatientModel patientModel = Provider.of(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Home',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
-        centerTitle: true,
+        title: Text(_dailyMessage(patientModel.userName)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
@@ -48,23 +43,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Consumer<PatientModel>(
-                builder:
-                    (context, user, _) => Text(
-                      _dailyMessage(user.userName),
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-              ),
-              const SizedBox(height: 40),
-              const Text(
-                'Welcome',
-                style: TextStyle(fontSize: 18),
-              ),
+          child: Column(children: [
             ],
           ),
         ),

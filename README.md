@@ -17,15 +17,15 @@ The application has two users, each with their own set of features. These are th
 - [ ] Booking appointments with a therapist
 - [ ] Sentiment/mood analysis tracking using the DASS-21 questionnaire
 - [x] Meditation system with background soundtracks
-- [ ] Journaling system
+- [x] Journaling system
 
 ### Therapist Features
 - [ ] Viewing patient details
 - [ ] Seeing bookings with patients
 
 ### Features For Both Users
-- [ ] Loging in and signing up
-- [ ] Basic account management (edit/delete account)
+- [x] Loging in and signing up
+- [x] Basic account management (edit/delete account)
 
 ## Development Tools & Frameworks
 The following development tools and frameworks were used in building the project:

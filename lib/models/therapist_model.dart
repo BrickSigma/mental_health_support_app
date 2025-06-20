@@ -69,11 +69,8 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     notifyListeners();
   }
 
-  /// Saves the therapist account information after editing the profile
-  Future<void> updateUserData(
-    String userName,
-    List<Map<String, String>> links,
-  ) async {
+  /// Saves the user account information after editing the user profile.
+  Future<void> updateUserData(String userName) async {
     _userName = userName;
 
     Map<String, dynamic> data = {
@@ -85,6 +82,13 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     final db = FirebaseFirestore.instance;
     await db.collection(_collection).doc(userInfo!.uid).update(data);
     notifyListeners();
+  }
+
+  /// Delete therapist account data
+  Future<void> deleteAccount() async {
+    final db = FirebaseFirestore.instance;
+
+    db.collection(_collection).doc(userInfo?.uid).delete();
   }
 
   /// Get patient requests for this therapist

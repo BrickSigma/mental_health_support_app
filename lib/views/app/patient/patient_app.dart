@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/views/app/patient/find_therapist.dart';
 import 'package:mental_health_support_app/views/app/patient/homepage.dart';
-import 'package:mental_health_support_app/views/app/patient/journal.dart';
-import 'package:mental_health_support_app/views/app/patient/mood_tracking.dart';
+import 'package:mental_health_support_app/views/app/patient/journaling/journal.dart';
 import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
 import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
@@ -19,9 +18,8 @@ class PatientApp extends StatefulWidget {
 class _PatientAppState extends State<PatientApp> {
   int _pageIndex = 0;
   final List<Widget> _pages = [
-    MeditationPage(),
     PatientHomePage(),
-    MoodTracking(),
+    MeditationPage(),
     FindTherapist(),
     Journal(),
     ProfilePage(),
@@ -44,10 +42,6 @@ class _PatientAppState extends State<PatientApp> {
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_emotions_outlined),
-            label: 'Mood',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.music_note),
             label: 'Meditate',
