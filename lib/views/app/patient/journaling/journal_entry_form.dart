@@ -38,6 +38,9 @@ class _JournalEntryFormPageState extends State<JournalEntryFormPage> {
   }
 
   void _saveEntry(BuildContext context, JournalModel journalModel) {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     JournalEntry updatedEntry = JournalEntry(
       "",
       _titleController.text,
