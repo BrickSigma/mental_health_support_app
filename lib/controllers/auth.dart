@@ -1,16 +1,13 @@
-/// Reusable functions for authentication with Firebase like creating a new user,
-/// signing in with Google, etc...
-library;
-
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:prompt_dialog/prompt_dialog.dart';
+import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Signs up a user using the Google API.
 Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
@@ -47,28 +44,27 @@ Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
         }
         isTherapist = await showDialog<bool>(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                title: Text(
-                  "You have not created an account yet!",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                content: Text("Create either a patient or therapist account:"),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(null),
-                    child: Text("Cancel"),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text("Patient Account"),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: Text("Therapist Account"),
-                  ),
-                ],
+          builder: (context) => AlertDialog(
+            title: Text(
+              "You have not created an account yet!",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            content: Text("Create either a patient or therapist account:"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(null),
+                child: Text("Cancel"),
               ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text("Patient Account"),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text("Therapist Account"),
+              ),
+            ],
+          ),
         );
 
         if (isTherapist == null) {
@@ -110,7 +106,7 @@ Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
           credentials.user!.email ?? "",
           specialty,
         );
-      } else if (userRole == UserRole.nonExistent) {
+      } else {
         await PatientModel.createUserDocument(
           credentials.user!.uid,
           credentials.user!.displayName ?? credentials.user!.email ?? "",
@@ -135,4 +131,19 @@ Future<bool> googleSignIn(BuildContext context, bool? isTherapist) async {
     }
     return false;
   }
+}
+
+/// Checks if a user exists in either patients or therapists collection
+Future<UserRole> checkUserRole(String uid) async {
+  final db = FirebaseFirestore.instance;
+  
+  // Check if user exists as patient
+  final patientDoc = await db.collection('patients').doc(uid).get();
+  if (patientDoc.exists) return UserRole.patient;
+  
+  // Check if user exists as therapist
+  final therapistDoc = await db.collection('therapists').doc(uid).get();
+  if (therapistDoc.exists) return UserRole.therapist;
+  
+  return UserRole.nonExistent;
 }

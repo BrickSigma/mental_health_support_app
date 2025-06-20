@@ -5,7 +5,6 @@ import 'package:mental_health_support_app/models/user_interface.dart';
 
 class TherapistModel extends ChangeNotifier implements UserInterface {
   /// User data
-
   User? userInfo;
   String _userName = "";
   String email = "";
@@ -19,7 +18,7 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
   @override
   String get userName => _userName;
 
-  /// Creates a new document entry for the user.
+  //Creates a new document entry for the therapist
   static Future<void> createUserDocument(
     String uid,
     String userName,
@@ -27,18 +26,30 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     String specialty,
   ) async {
     final db = FirebaseFirestore.instance;
-    Map<String, dynamic> data = {
+    final therapistRef = db.collection(_collection).doc(uid);
+    
+    // Create main therapist document
+    await therapistRef.set({
       "username": userName,
       "email": email,
       "specialty": specialty,
-    };
+      "createdAt": FieldValue.serverTimestamp(),
+    });
 
-    await db.collection(_collection).doc(uid).set(data);
+    // Create patient_requests subcollection
+    await therapistRef.collection('patient_requests').doc('initial').set({
+      'status': 'empty',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    // Create patients subcollection
+    await therapistRef.collection('patients').doc('initial').set({
+      'active': false,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 
-  /// Retrieves the user data from firebase.
-  ///
-  /// `currentUser` - FirebaseAuth User instance
+  /// Retrieves the therapist data from firebase
   Future<void> loadUserData(User currentUser) async {
     final db = FirebaseFirestore.instance;
     DocumentSnapshot<Map<String, dynamic>> document =
@@ -54,16 +65,22 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     _userName = data["username"] ?? currentUser.email ?? "";
     email = data["email"] ?? currentUser.email ?? "";
     specialty = data["specialty"] ?? "";
+    
+    notifyListeners();
   }
 
   /// Saves the user account information after editing the user profile.
   Future<void> updateUserData(String userName) async {
     _userName = userName;
 
-    Map<String, dynamic> data = {"username": _userName, "email": email};
+    Map<String, dynamic> data = {
+      "username": _userName,
+      "email": email,
+      "specialty": specialty,
+    };
 
     final db = FirebaseFirestore.instance;
-    await db.collection(_collection).doc(userInfo!.uid).set(data);
+    await db.collection(_collection).doc(userInfo!.uid).update(data);
     notifyListeners();
   }
 
@@ -72,5 +89,34 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     final db = FirebaseFirestore.instance;
 
     db.collection(_collection).doc(userInfo?.uid).delete();
+  }
+
+  /// Get patient requests for this therapist
+  Future<List<Map<String, dynamic>>> getPatientRequests() async {
+    if (userInfo == null) return [];
+    
+    final snapshot = await FirebaseFirestore.instance
+        .collection(_collection)
+        .doc(userInfo!.uid)
+        .collection('patient_requests')
+        .where('status', isNotEqualTo: 'empty')
+        .orderBy('timestamp', descending: true)
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
+
+  /// Get accepted patients for this therapist
+  Future<List<Map<String, dynamic>>> getAcceptedPatients() async {
+    if (userInfo == null) return [];
+    
+    final snapshot = await FirebaseFirestore.instance
+        .collection(_collection)
+        .doc(userInfo!.uid)
+        .collection('patients')
+        .where('active', isEqualTo: true)
+        .get();
+
+    return snapshot.docs.map((doc) => doc.data()).toList();
   }
 }

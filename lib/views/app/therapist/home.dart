@@ -1,79 +1,70 @@
-import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:mental_health_support_app/models/therapist_model.dart';
-import 'package:mental_health_support_app/models/user_interface.dart';
 import 'package:provider/provider.dart';
+import 'package:mental_health_support_app/models/therapist_model.dart';
+import 'package:mental_health_support_app/views/app/therapist/notifications.dart';
 
-class TherapistHomeView extends StatelessWidget {
-  const TherapistHomeView({super.key});
-
-  String _dailyMessage(String? username) {
-    final currentTime = DateTime.now();
-    if (currentTime.hour < 12) {
-      return "Good morning ${username ?? ""}";
-    } else if (currentTime.hour < 18) {
-      return "Good afternoon ${username ?? ""}";
-    } else {
-      return "Good evening ${username ?? ""}";
-    }
-  }
+class TherapistHomePage extends StatefulWidget {
+  const TherapistHomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    UserInterface user = Provider.of<TherapistModel>(context, listen: false);
-    LoginProvider loginProvider = Provider.of(context, listen: false);
-
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _dailyMessage(user.userName),
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                SizedBox(height: 12),
-                Text(
-                  user.userRole == UserRole.patient ? "Patient" : "Therapist",
-                ),
-                SizedBox(height: 12),
-                Text(
-                  "Upcomming sessions",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                SizedBox(height: 12),
-                SizedBox(width: double.infinity, child: UpcommingSessionCard()),
-                SizedBox(height: 12),
-                FilledButton(
-                  onPressed: () => loginProvider.logout(),
-                  child: Text("Log out"),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  State<TherapistHomePage> createState() => _TherapistHomePageState();
 }
 
-class UpcommingSessionCard extends StatelessWidget {
-  const UpcommingSessionCard({super.key});
+class _TherapistHomePageState extends State<TherapistHomePage> {
+  String _dailyMessage(String? username) {
+    final hour = DateTime.now().hour;
+    return hour < 12
+        ? "Good morning, ${username ?? ""}"
+        : hour < 18
+        ? "Good afternoon, ${username ?? ""}"
+        : "Good evening, ${username ?? ""}";
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(6),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Home',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_none),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TherapistNotifications(),
+                  ),
+                ),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Text("No sessions planned for today"),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Consumer<TherapistModel>(
+                builder:
+                    (context, therapist, _) => Text(
+                      _dailyMessage(therapist.userName),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+              ),
+              const SizedBox(height: 40),
+              const Text(
+                'Welcome',
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

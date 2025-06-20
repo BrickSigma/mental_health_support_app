@@ -4,6 +4,9 @@ import 'package:mental_health_support_app/views/app/patient/homepage.dart';
 import 'package:mental_health_support_app/views/app/patient/journaling/journal.dart';
 import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
+import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientApp extends StatefulWidget {
   const PatientApp({super.key});
@@ -13,6 +16,7 @@ class PatientApp extends StatefulWidget {
 }
 
 class _PatientAppState extends State<PatientApp> {
+  int _pageIndex = 0;
   final List<Widget> _pages = [
     PatientHomePage(),
     MeditationPage(),
@@ -20,8 +24,6 @@ class _PatientAppState extends State<PatientApp> {
     Journal(),
     ProfilePage(),
   ];
-  int _pageIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,6 +38,8 @@ class _PatientAppState extends State<PatientApp> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
