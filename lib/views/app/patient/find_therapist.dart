@@ -103,6 +103,7 @@ class _FindTherapistState extends State<FindTherapist> {
       setState(() => _isLoading = false);
     }
   }
+
   Future<void> _checkAssignedTherapist() async {
     setState(() => _isLoading = true);
     final patient = _auth.currentUser;
@@ -136,174 +137,180 @@ class _FindTherapistState extends State<FindTherapist> {
   Widget build(BuildContext context) {
     if (_assignedTherapistId != null) {
       return TherapistDetails(therapistId: _assignedTherapistId!);
-    } 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Find Therapist",
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search by name or specialty...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            "Find Therapist",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(60),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Search by name or specialty...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
                 ),
-                filled: true,
-                fillColor: Colors.grey[200],
+                onChanged:
+                    (value) =>
+                        setState(() => _searchQuery = value.toLowerCase()),
               ),
-              onChanged:
-                  (value) => setState(() => _searchQuery = value.toLowerCase()),
             ),
           ),
         ),
-      ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : StreamBuilder<QuerySnapshot>(
-                stream: _firestore.collection('therapists').snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Error loading therapists'),
-                    );
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Center(child: Text('No therapists available'));
-                  }
+        body:
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : StreamBuilder<QuerySnapshot>(
+                  stream: _firestore.collection('therapists').snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text('Error loading therapists'),
+                      );
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(
+                        child: Text('No therapists available'),
+                      );
+                    }
 
-                  final therapists =
-                      snapshot.data!.docs.where((doc) {
-                        final data = doc.data() as Map<String, dynamic>;
-                        final name =
-                            data['username']?.toString().toLowerCase() ?? '';
-                        final specialty =
-                            data['specialty']?.toString().toLowerCase() ?? '';
-                        return name.contains(_searchQuery) ||
-                            specialty.contains(_searchQuery);
-                      }).toList();
+                    final therapists =
+                        snapshot.data!.docs.where((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          final name =
+                              data['username']?.toString().toLowerCase() ?? '';
+                          final specialty =
+                              data['specialty']?.toString().toLowerCase() ?? '';
+                          return name.contains(_searchQuery) ||
+                              specialty.contains(_searchQuery);
+                        }).toList();
 
-                  if (therapists.isEmpty) {
-                    return const Center(
-                      child: Text('No matching therapists found'),
-                    );
-                  }
+                    if (therapists.isEmpty) {
+                      return const Center(
+                        child: Text('No matching therapists found'),
+                      );
+                    }
 
-                  return ListView.builder(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    itemCount: therapists.length,
-                    itemBuilder: (context, index) {
-                      final therapist = therapists[index];
-                      final data = therapist.data() as Map<String, dynamic>;
-                      final username = data['username'] ?? 'No name';
-                      final specialty = data['specialty'] ?? 'No specialty';
-                      final therapistId = therapist.id;
-                      final hasPendingRequest =
-                          _requestStatus[therapistId] == true;
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      itemCount: therapists.length,
+                      itemBuilder: (context, index) {
+                        final therapist = therapists[index];
+                        final data = therapist.data() as Map<String, dynamic>;
+                        final username = data['username'] ?? 'No name';
+                        final specialty = data['specialty'] ?? 'No specialty';
+                        final therapistId = therapist.id;
+                        final hasPendingRequest =
+                            _requestStatus[therapistId] == true;
 
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (context) => TherapistDetails(
-                                      therapistId: therapistId,
-                                    ),
-                              ),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 28,
-                                  backgroundColor: Colors.grey[300],
-                                  child: Icon(
-                                    Icons.person,
-                                    color: Colors.grey[700],
-                                    size: 28,
-                                  ),
+                        return Card(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) => TherapistDetails(
+                                        therapistId: therapistId,
+                                      ),
                                 ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        username,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        specialty,
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                        ),
-                                      ),
-                                    ],
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(12),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 28,
+                                    backgroundColor: Colors.grey[300],
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.grey[700],
+                                      size: 28,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                if (hasPendingRequest)
-                                  const Text(
-                                    'Requested',
-                                    style: TextStyle(
-                                      color: Colors.orange,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                else
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                    ),
-                                    onPressed:
-                                        () => _sendRequest(
-                                          context,
-                                          therapistId,
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
                                           username,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                    child: const Text('Request'),
+                                        Text(
+                                          specialty,
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                              ],
+                                  const SizedBox(width: 8),
+                                  if (hasPendingRequest)
+                                    const Text(
+                                      'Requested',
+                                      style: TextStyle(
+                                        color: Colors.orange,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  else
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                      ),
+                                      onPressed:
+                                          () => _sendRequest(
+                                            context,
+                                            therapistId,
+                                            username,
+                                          ),
+                                      child: const Text('Request'),
+                                    ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-              ),
-    );
+                        );
+                      },
+                    );
+                  },
+                ),
+      );
+    }
   }
 }
