@@ -16,6 +16,7 @@ class _FindTherapistState extends State<FindTherapist> {
   String _searchQuery = '';
   final Map<String, bool> _requestStatus = {};
   bool _isLoading = false;
+  String? _assignedTherapistId;
 
   Future<void> _sendRequest(
     BuildContext context,
@@ -50,7 +51,6 @@ class _FindTherapistState extends State<FindTherapist> {
             'therapistName': therapistName,
           });
 
-      // Also store in patient's sent requests
       await _firestore
           .collection('patients')
           .doc(patient.uid)
@@ -103,15 +103,40 @@ class _FindTherapistState extends State<FindTherapist> {
       setState(() => _isLoading = false);
     }
   }
+  Future<void> _checkAssignedTherapist() async {
+    setState(() => _isLoading = true);
+    final patient = _auth.currentUser;
+    if (patient == null) return;
+
+    try {
+      final patientDoc = await _firestore.collection('patients').doc(patient.uid).get();
+      if (patientDoc.exists) {
+        final data = patientDoc.data() as Map<String, dynamic>;
+        if (data['assignedTherapistId'] != null) {
+          setState(() {
+            _assignedTherapistId = data['assignedTherapistId'];
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error checking assigned therapist: $e');
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    _checkAssignedTherapist();
     _checkExistingRequests();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_assignedTherapistId != null) {
+      return TherapistDetails(therapistId: _assignedTherapistId!);
+    } 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
