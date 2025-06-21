@@ -104,17 +104,17 @@ class SentimentAnalysisSection extends StatelessWidget {
                       ),
                       SizedBox(height: 6),
                       Text(
-                        "Depression score: ${patientModel.dassModel.value!.depressionScore}",
+                        "Depression score: ${patientModel.dassModel.value!.getDepressionStatus()} (${patientModel.dassModel.value!.depressionScore})",
                       ),
                       SizedBox(height: 6),
 
                       Text(
-                        "Anxiety score: ${patientModel.dassModel.value!.anxietyScore}",
+                        "Anxiety score: ${patientModel.dassModel.value!.getAnxietyStatus()} (${patientModel.dassModel.value!.anxietyScore})",
                       ),
                       SizedBox(height: 6),
 
                       Text(
-                        "Stress score: ${patientModel.dassModel.value!.stressScore}",
+                        "Stress score: ${patientModel.dassModel.value!.getStressStatus()} (${patientModel.dassModel.value!.stressScore})",
                       ),
                     ],
                   ),
@@ -135,10 +135,11 @@ class SentimentAnalysisSection extends StatelessWidget {
                       ),
                   child: Text("Fill in a new form"),
                 ),
-                FilledButton(
-                  onPressed: () {},
-                  child: Text("View form history"),
-                ),
+                if (patientModel.dassModel.value != null)
+                  FilledButton(
+                    onPressed: () {},
+                    child: Text("View form history"),
+                  ),
               ],
             ),
           ],

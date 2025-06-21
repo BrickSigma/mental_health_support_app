@@ -11,6 +11,48 @@ class DASSModel extends ChangeNotifier {
   int stressScore = 0;
   List<int> questionScores = List.filled(21, 0, growable: false);
 
+  String getDepressionStatus() {
+    if (depressionScore <= 9) {
+      return "Normal";
+    } else if (depressionScore <= 13) {
+      return "Mild";
+    } else if (depressionScore <= 20) {
+      return "Moderate";
+    } else if (depressionScore <= 27) {
+      return "Severe";
+    } else {
+      return "Extremely Severe";
+    }
+  }
+
+  String getAnxietyStatus() {
+    if (anxietyScore <= 7) {
+      return "Normal";
+    } else if (anxietyScore <= 9) {
+      return "Mild";
+    } else if (anxietyScore <= 14) {
+      return "Moderate";
+    } else if (anxietyScore <= 19) {
+      return "Severe";
+    } else {
+      return "Extremely Severe";
+    }
+  }
+
+  String getStressStatus() {
+    if (depressionScore <= 14) {
+      return "Normal";
+    } else if (depressionScore <= 18) {
+      return "Mild";
+    } else if (depressionScore <= 25) {
+      return "Moderate";
+    } else if (depressionScore <= 33) {
+      return "Severe";
+    } else {
+      return "Extremely Severe";
+    }
+  }
+
   DASSModel(this.id, this.timeFilledIn, this.questionScores) {
     assert(questionScores.length == 21);
 
