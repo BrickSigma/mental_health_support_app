@@ -136,7 +136,10 @@ class _FindTherapistState extends State<FindTherapist> {
   @override
   Widget build(BuildContext context) {
     if (_assignedTherapistId != null) {
-      return TherapistDetails(therapistId: _assignedTherapistId!);
+      return TherapistDetails(
+        therapistId: _assignedTherapistId!,
+        patientId: _auth.currentUser?.uid ?? '',
+      );
     } else {
       return Scaffold(
         appBar: AppBar(
@@ -233,6 +236,7 @@ class _FindTherapistState extends State<FindTherapist> {
                                   builder:
                                       (context) => TherapistDetails(
                                         therapistId: therapistId,
+                                        patientId: _auth.currentUser?.uid ?? '',
                                       ),
                                 ),
                               );

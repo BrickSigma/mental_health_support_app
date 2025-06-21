@@ -11,7 +11,7 @@ class BookSession extends StatefulWidget {
   const BookSession({
     super.key,
     required this.therapistId,
-    required this.therapistName,
+    required this.therapistName, required String patientId,
   });
 
   @override
