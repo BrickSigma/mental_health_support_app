@@ -6,7 +6,11 @@ class TherapistDetails extends StatelessWidget {
   final String therapistId;
   final String patientId;
 
-  const TherapistDetails({super.key, required this.therapistId, required this.patientId});
+  const TherapistDetails({
+    super.key,
+    required this.therapistId,
+    required this.patientId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +65,6 @@ class TherapistDetails extends StatelessWidget {
                       username.isNotEmpty ? username[0].toUpperCase() : '?',
                       style: const TextStyle(
                         fontSize: 36,
-                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

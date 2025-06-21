@@ -11,7 +11,8 @@ class BookSession extends StatefulWidget {
   const BookSession({
     super.key,
     required this.therapistId,
-    required this.therapistName, required String patientId,
+    required this.therapistName,
+    required String patientId,
   });
 
   @override
@@ -29,7 +30,6 @@ class _BookSessionState extends State<BookSession> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
-
     );
     if (picked != null && picked != _selectedTime) {
       setState(() {
@@ -38,7 +38,7 @@ class _BookSessionState extends State<BookSession> {
     }
   }
 
-  Future<void> _bookSession() async {
+  Future<void> _bookSession(BuildContext context) async {
     if (_topicController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please enter a topic for your session')),
@@ -49,7 +49,9 @@ class _BookSessionState extends State<BookSession> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must be logged in to book a session')),
+        const SnackBar(
+          content: Text('You must be logged in to book a session'),
+        ),
       );
       return;
     }
@@ -64,14 +66,16 @@ class _BookSessionState extends State<BookSession> {
 
     try {
       final sessionsRef = FirebaseFirestore.instance.collection('sessions');
-      final patientDoc = await FirebaseFirestore.instance
-        .collection('patients')
-        .doc(user.uid)
-        .get();
+      final patientDoc =
+          await FirebaseFirestore.instance
+              .collection('patients')
+              .doc(user.uid)
+              .get();
 
-     final patientName = patientDoc.exists == true
-        ? (patientDoc.data()?['username'] ?? 'Patient')
-        : 'Patient';
+      final patientName =
+          patientDoc.exists == true
+              ? (patientDoc.data()?['username'] ?? 'Patient')
+              : 'Patient';
 
       await sessionsRef.add({
         'therapistId': widget.therapistId,
@@ -87,15 +91,21 @@ class _BookSessionState extends State<BookSession> {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Session booked with ${widget.therapistName}')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Session booked with ${widget.therapistName}'),
+          ),
+        );
 
-      Navigator.pop(context);
+        Navigator.pop(context);
+      }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to book session: ${e.toString()}')),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to book session: ${e.toString()}')),
+        );
+      }
     }
   }
 
@@ -108,9 +118,7 @@ class _BookSessionState extends State<BookSession> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Book with ${widget.therapistName}'),
-      ),
+      appBar: AppBar(title: Text('Book with ${widget.therapistName}')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -168,17 +176,18 @@ class _BookSessionState extends State<BookSession> {
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
-              children: _durationOptions.map((duration) {
-                return ChoiceChip(
-                  label: Text('$duration min'),
-                  selected: _selectedDuration == duration,
-                  onSelected: (selected) {
-                    setState(() {
-                      _selectedDuration = duration;
-                    });
-                  },
-                );
-              }).toList(),
+              children:
+                  _durationOptions.map((duration) {
+                    return ChoiceChip(
+                      label: Text('$duration min'),
+                      selected: _selectedDuration == duration,
+                      onSelected: (selected) {
+                        setState(() {
+                          _selectedDuration = duration;
+                        });
+                      },
+                    );
+                  }).toList(),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -197,9 +206,12 @@ class _BookSessionState extends State<BookSession> {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: _bookSession,
+                onPressed: () => _bookSession(context),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 10,
+                  ),
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(

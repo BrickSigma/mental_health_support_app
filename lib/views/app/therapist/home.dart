@@ -20,8 +20,8 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
     return hour < 12
         ? "Good morning, ${username ?? ""}"
         : hour < 18
-            ? "Good afternoon, ${username ?? ""}"
-            : "Good evening, ${username ?? ""}";
+        ? "Good afternoon, ${username ?? ""}"
+        : "Good evening, ${username ?? ""}";
   }
 
   Stream<QuerySnapshot> _getUpcomingSessions() {
@@ -49,12 +49,13 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_none),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const TherapistNotifications(),
-              ),
-            ),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TherapistNotifications(),
+                  ),
+                ),
           ),
         ],
       ),
@@ -66,23 +67,21 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
             children: [
               // Greeting
               Consumer<TherapistModel>(
-                builder: (context, therapist, _) => Text(
-                  _dailyMessage(therapist.userName),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                builder:
+                    (context, therapist, _) => Text(
+                      _dailyMessage(therapist.userName),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
               ),
               const SizedBox(height: 30),
 
               // Upcoming Sessions
               const Text(
                 'Upcoming Sessions',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
 
@@ -110,83 +109,91 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
                   }
 
                   return Column(
-                    children: sessions.map((doc) {
-                      final data = doc.data() as Map<String, dynamic>;
-                      final dateTime = (data['dateTime'] as Timestamp).toDate();
-                      final duration = data['duration'] as int;
+                    children:
+                        sessions.map((doc) {
+                          final data = doc.data() as Map<String, dynamic>;
+                          final dateTime =
+                              (data['dateTime'] as Timestamp).toDate();
+                          final duration = data['duration'] as int;
 
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    data['topic'] ?? 'No topic specified',
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Chip(
-                                    label: Text(
-                                      data['status'] ?? 'pending',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        data['topic'] ?? 'No topic specified',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
                                       ),
+                                      Chip(
+                                        label: Text(
+                                          data['status'] ?? 'pending',
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                        backgroundColor: _getStatusColor(
+                                          data['status'] ?? 'pending',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'With: ${data['patientName'] ?? 'Patient'}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    '${DateFormat('EEEE, MMM d').format(dateTime)} • ${DateFormat('h:mm a').format(dateTime)}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Duration: $duration minutes',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: TextButton(
+                                      onPressed:
+                                          () => _showSessionDetails(
+                                            context,
+                                            doc.id,
+                                            data,
+                                          ),
+                                      child: const Text('VIEW DETAILS'),
                                     ),
-                                    backgroundColor: _getStatusColor(
-                                        data['status'] ?? 'pending'),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'With: ${data['patientName'] ?? 'Patient'}',
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${DateFormat('EEEE, MMM d').format(dateTime)} • ${DateFormat('h:mm a').format(dateTime)}',
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Duration: $duration minutes',
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 8),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: TextButton(
-                                  onPressed: () => _showSessionDetails(
-                                      context, doc.id, data),
-                                  child: const Text('VIEW DETAILS'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                            ),
+                          );
+                        }).toList(),
                   );
                 },
               ),
               const SizedBox(height: 20),
 
-            // View All Sessions
+              // View All Sessions
               Center(
                 child: ElevatedButton(
                   onPressed: () => _navigateToAllSessions(context),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 12),
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
                   ),
                   child: const Text('View All Sessions'),
                 ),
@@ -214,51 +221,59 @@ class _TherapistHomePageState extends State<TherapistHomePage> {
   void _navigateToAllSessions(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const TherapistSessionsScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const TherapistSessionsScreen()),
     );
   }
 
   Future<void> _showSessionDetails(
-      BuildContext context, String sessionId, Map<String, dynamic> data) async {
+    BuildContext context,
+    String sessionId,
+    Map<String, dynamic> data,
+  ) async {
     final dateTime = (data['dateTime'] as Timestamp).toDate();
     final duration = data['duration'] as int;
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Session Details'),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                data['topic'] ?? 'No topic specified',
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Session Details'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    data['topic'] ?? 'No topic specified',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildDetailRow('Patient:', data['patientName'] ?? 'Patient'),
+                  _buildDetailRow(
+                    'Date:',
+                    DateFormat('MMMM d, yyyy').format(dateTime),
+                  ),
+                  _buildDetailRow(
+                    'Time:',
+                    DateFormat('h:mm a').format(dateTime),
+                  ),
+                  _buildDetailRow('Duration:', '$duration minutes'),
+                  _buildDetailRow('Status:', data['status'] ?? 'pending'),
+                  if (data['patientEmail'] != null)
+                    _buildDetailRow('Email:', data['patientEmail']),
+                ],
               ),
-              const SizedBox(height: 16),
-              _buildDetailRow('Patient:', data['patientName'] ?? 'Patient'),
-              _buildDetailRow('Date:', DateFormat('MMMM d, yyyy').format(dateTime)),
-              _buildDetailRow('Time:', DateFormat('h:mm a').format(dateTime)),
-              _buildDetailRow('Duration:', '$duration minutes'),
-              _buildDetailRow('Status:', data['status'] ?? 'pending'),
-              if (data['patientEmail'] != null)
-                _buildDetailRow('Email:', data['patientEmail']),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('CLOSE'),
+              ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CLOSE'),
-          ),
-        ],
-      ),
     );
   }
 

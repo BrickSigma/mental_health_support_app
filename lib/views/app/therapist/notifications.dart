@@ -22,13 +22,14 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
   }) async {
     try {
       // Verify request exists and is pending
-      final requestDoc = await _firestore
-          .collection('therapists')
-          .doc(therapistId)
-          .collection('requests')
-          .doc(patientId)
-          .get();
-          
+      final requestDoc =
+          await _firestore
+              .collection('therapists')
+              .doc(therapistId)
+              .collection('requests')
+              .doc(patientId)
+              .get();
+
       return requestDoc.exists && requestDoc['status'] == 'pending';
     } catch (e) {
       return false;
@@ -45,9 +46,9 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
     if (_isProcessing) return;
     if (therapistId != _auth.currentUser?.uid) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Authentication error')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Authentication error')));
       return;
     }
 
@@ -58,7 +59,7 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
         therapistId: therapistId,
         patientId: patientId,
       );
-      
+
       if (!canProceed) {
         throw Exception('Request no longer exists or was already processed');
       }
@@ -77,11 +78,12 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
       });
 
       // Create notification for patient
-      final notificationRef = _firestore
-          .collection('patients')
-          .doc(patientId)
-          .collection('notifications')
-          .doc();
+      final notificationRef =
+          _firestore
+              .collection('patients')
+              .doc(patientId)
+              .collection('notifications')
+              .doc();
       batch.set(notificationRef, {
         'type': 'therapist_response',
         'title': 'Therapist Request $status',
@@ -172,18 +174,16 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Patient Requests'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Patient Requests'), centerTitle: true),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore
-            .collection('therapists')
-            .doc(therapistId)
-            .collection('requests')
-            .where('status', isEqualTo: 'pending')
-            .orderBy('timestamp', descending: true)
-            .snapshots(),
+        stream:
+            _firestore
+                .collection('therapists')
+                .doc(therapistId)
+                .collection('requests')
+                .where('status', isEqualTo: 'pending')
+                .orderBy('timestamp', descending: true)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -210,7 +210,9 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                     'No pending requests',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onSurface.withAlpha(155),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(155),
                     ),
                   ),
                 ],
@@ -239,9 +241,11 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                       Row(
                         children: [
                           CircleAvatar(
-                            child: Text(patientName.isNotEmpty 
-                                ? patientName[0].toUpperCase() 
-                                : '?'),
+                            child: Text(
+                              patientName.isNotEmpty
+                                  ? patientName[0].toUpperCase()
+                                  : '?',
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -271,8 +275,8 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            timestamp != null 
-                                ? _dateFormat.format(timestamp) 
+                            timestamp != null
+                                ? _dateFormat.format(timestamp)
                                 : 'No timestamp',
                             style: TextStyle(
                               fontSize: 12,
@@ -283,26 +287,34 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                             Row(
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.check, color: Colors.green),
-                                  onPressed: () => _showConfirmationDialog(
-                                    context,
-                                    patientId: patientId,
-                                    therapistId: therapistId,
-                                    patientName: patientName,
-                                    patientEmail: patientEmail,
-                                    action: 'accept',
+                                  icon: const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
                                   ),
+                                  onPressed:
+                                      () => _showConfirmationDialog(
+                                        context,
+                                        patientId: patientId,
+                                        therapistId: therapistId,
+                                        patientName: patientName,
+                                        patientEmail: patientEmail,
+                                        action: 'accept',
+                                      ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.close, color: Colors.red),
-                                  onPressed: () => _showConfirmationDialog(
-                                    context,
-                                    patientId: patientId,
-                                    therapistId: therapistId,
-                                    patientName: patientName,
-                                    patientEmail: patientEmail,
-                                    action: 'reject',
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
                                   ),
+                                  onPressed:
+                                      () => _showConfirmationDialog(
+                                        context,
+                                        patientId: patientId,
+                                        therapistId: therapistId,
+                                        patientName: patientName,
+                                        patientEmail: patientEmail,
+                                        action: 'reject',
+                                      ),
                                 ),
                               ],
                             )
@@ -312,7 +324,9 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                               child: SizedBox(
                                 width: 24,
                                 height: 24,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             ),
                         ],
@@ -338,28 +352,29 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
   }) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('${action.capitalize()} Request?'),
-        content: Text(
-          'Are you sure you want to $action the request from $patientName?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(
-              action.toUpperCase(),
-              style: TextStyle(
-                color: action == 'accept' ? Colors.green : Colors.red,
-                fontWeight: FontWeight.bold,
-              ),
+      builder:
+          (context) => AlertDialog(
+            title: Text('${action.capitalize()} Request?'),
+            content: Text(
+              'Are you sure you want to $action the request from $patientName?',
             ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: Text(
+                  action.toUpperCase(),
+                  style: TextStyle(
+                    color: action == 'accept' ? Colors.green : Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
     );
 
     if (confirmed == true) {

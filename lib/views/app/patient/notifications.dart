@@ -31,12 +31,13 @@ class _PatientsNotificationState extends State<PatientsNotification> {
     final patientId = _auth.currentUser?.uid;
     if (patientId == null) return;
 
-    final querySnapshot = await _firestore
-        .collection('patients')
-        .doc(patientId)
-        .collection('notifications')
-        .where('read', isEqualTo: false)
-        .get();
+    final querySnapshot =
+        await _firestore
+            .collection('patients')
+            .doc(patientId)
+            .collection('notifications')
+            .where('read', isEqualTo: false)
+            .get();
 
     final batch = _firestore.batch();
     for (final doc in querySnapshot.docs) {
@@ -59,7 +60,9 @@ class _PatientsNotificationState extends State<PatientsNotification> {
   }
 
   void _handleNotificationTap(
-      DocumentSnapshot notification, BuildContext context) {
+    DocumentSnapshot notification,
+    BuildContext context,
+  ) {
     final data = notification.data() as Map<String, dynamic>;
     _markAsRead(notification.id);
 
@@ -112,21 +115,29 @@ class _PatientsNotificationState extends State<PatientsNotification> {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore
-            .collection('patients')
-            .doc(patientId)
-            .collection('notifications')
-            .orderBy('timestamp', descending: true)
-            .snapshots(),
+        stream:
+            _firestore
+                .collection('patients')
+                .doc(patientId)
+                .collection('notifications')
+                .orderBy('timestamp', descending: true)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.warning_amber, size: 48, color: Colors.orange),
+                  const Icon(
+                    Icons.warning_amber,
+                    size: 48,
+                    color: Colors.orange,
+                  ),
                   const SizedBox(height: 16),
-                  const Text('Error loading notifications', style: TextStyle(fontSize: 18)),
+                  const Text(
+                    'Error loading notifications',
+                    style: TextStyle(fontSize: 18),
+                  ),
                   const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -167,7 +178,9 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                     'No notifications yet',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onSurface.withAlpha(155),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withAlpha(155),
                     ),
                   ),
                 ],
@@ -194,9 +207,10 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                     width: 1,
                   ),
                 ),
-                color: isRead
-                    ? null
-                    : Theme.of(context).colorScheme.primary.withAlpha(15),
+                color:
+                    isRead
+                        ? null
+                        : Theme.of(context).colorScheme.primary.withAlpha(15),
                 child: ListTile(
                   leading: _buildNotificationIcon(data['type']),
                   title: Text(
@@ -219,9 +233,14 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                         ),
                     ],
                   ),
-                  trailing: !isRead
-                      ? const Icon(Icons.circle, size: 10, color: Colors.blue)
-                      : null,
+                  trailing:
+                      !isRead
+                          ? const Icon(
+                            Icons.circle,
+                            size: 10,
+                            color: Colors.blue,
+                          )
+                          : null,
                   onTap: () => _handleNotificationTap(notification, context),
                 ),
               );

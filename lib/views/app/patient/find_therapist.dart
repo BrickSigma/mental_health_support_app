@@ -110,7 +110,8 @@ class _FindTherapistState extends State<FindTherapist> {
     if (patient == null) return;
 
     try {
-      final patientDoc = await _firestore.collection('patients').doc(patient.uid).get();
+      final patientDoc =
+          await _firestore.collection('patients').doc(patient.uid).get();
       if (patientDoc.exists) {
         final data = patientDoc.data() as Map<String, dynamic>;
         if (data['assignedTherapistId'] != null) {

@@ -7,7 +7,8 @@ class TherapistSessionsScreen extends StatefulWidget {
   const TherapistSessionsScreen({super.key});
 
   @override
-  State<TherapistSessionsScreen> createState() => _TherapistSessionsScreenState();
+  State<TherapistSessionsScreen> createState() =>
+      _TherapistSessionsScreenState();
 }
 
 class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
@@ -27,20 +28,21 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                 _selectedFilter = value;
               });
             },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'upcoming',
-                child: Text('Upcoming Sessions'),
-              ),
-              const PopupMenuItem(
-                value: 'past',
-                child: Text('Past Sessions'),
-              ),
-              const PopupMenuItem(
-                value: 'all',
-                child: Text('All Sessions'),
-              ),
-            ],
+            itemBuilder:
+                (context) => [
+                  const PopupMenuItem(
+                    value: 'upcoming',
+                    child: Text('Upcoming Sessions'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'past',
+                    child: Text('Past Sessions'),
+                  ),
+                  const PopupMenuItem(
+                    value: 'all',
+                    child: Text('All Sessions'),
+                  ),
+                ],
           ),
         ],
       ),
@@ -79,7 +81,9 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('With: ${data['patientName']}'),
-                      Text('Date: ${DateFormat('MMM dd, yyyy').format(dateTime)}'),
+                      Text(
+                        'Date: ${DateFormat('MMM dd, yyyy').format(dateTime)}',
+                      ),
                       Text('Time: ${DateFormat('h:mm a').format(dateTime)}'),
                       Text('Duration: $duration minutes'),
                       Text('Status: ${status.toUpperCase()}'),
@@ -106,9 +110,10 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
       return const Stream.empty();
     }
 
-    Query query = _firestore.collection('sessions')
-      .where('therapistId', isEqualTo: therapistId)
-      .orderBy('dateTime');
+    Query query = _firestore
+        .collection('sessions')
+        .where('therapistId', isEqualTo: therapistId)
+        .orderBy('dateTime');
 
     switch (_selectedFilter) {
       case 'upcoming':
@@ -125,7 +130,11 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
     return query.snapshots();
   }
 
-  Future<void> _showEditDialog(BuildContext context, String sessionId, Map<String, dynamic> sessionData) async {
+  Future<void> _showEditDialog(
+    BuildContext context,
+    String sessionId,
+    Map<String, dynamic> sessionData,
+  ) async {
     final dateTime = (sessionData['dateTime'] as Timestamp).toDate();
     final duration = sessionData['duration'] as int;
     final topic = sessionData['topic'] as String;
@@ -148,21 +157,25 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                   children: [
                     // Date Picker
                     ListTile(
-                      title: Text('Date: ${DateFormat('MMM dd, yyyy').format(newDate)}'),
+                      title: Text(
+                        'Date: ${DateFormat('MMM dd, yyyy').format(newDate)}',
+                      ),
                       trailing: const Icon(Icons.calendar_today),
                       onTap: () async {
                         final selectedDate = await showDatePicker(
                           context: context,
                           initialDate: newDate,
                           firstDate: DateTime.now(),
-                          lastDate: DateTime.now().add(const Duration(days: 365)),
+                          lastDate: DateTime.now().add(
+                            const Duration(days: 365),
+                          ),
                         );
                         if (selectedDate != null) {
                           setState(() => newDate = selectedDate);
                         }
                       },
                     ),
-                    
+
                     // Time Picker
                     ListTile(
                       title: Text('Time: ${newTime.format(context)}'),
@@ -177,7 +190,7 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                         }
                       },
                     ),
-                    
+
                     // Duration
                     DropdownButtonFormField<int>(
                       value: newDuration,
@@ -194,11 +207,13 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                       },
                       decoration: const InputDecoration(labelText: 'Duration'),
                     ),
-                    
+
                     // Topic
                     TextField(
                       controller: topicController,
-                      decoration: const InputDecoration(labelText: 'Session Topic'),
+                      decoration: const InputDecoration(
+                        labelText: 'Session Topic',
+                      ),
                     ),
                   ],
                 ),
@@ -217,25 +232,34 @@ class _TherapistSessionsScreenState extends State<TherapistSessionsScreen> {
                       newTime.hour,
                       newTime.minute,
                     );
-                    
+
                     try {
-                      await _firestore.collection('sessions').doc(sessionId).update({
-                        'dateTime': updatedDateTime,
-                        'duration': newDuration,
-                        'topic': topicController.text,
-                        'updatedAt': FieldValue.serverTimestamp(),
-                      });
-                      
+                      await _firestore
+                          .collection('sessions')
+                          .doc(sessionId)
+                          .update({
+                            'dateTime': updatedDateTime,
+                            'duration': newDuration,
+                            'topic': topicController.text,
+                            'updatedAt': FieldValue.serverTimestamp(),
+                          });
+
                       if (context.mounted) {
                         Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Session updated successfully')),
+                          const SnackBar(
+                            content: Text('Session updated successfully'),
+                          ),
                         );
                       }
                     } catch (e) {
                       if (context.mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed to update session: ${e.toString()}')),
+                          SnackBar(
+                            content: Text(
+                              'Failed to update session: ${e.toString()}',
+                            ),
+                          ),
                         );
                       }
                     }
