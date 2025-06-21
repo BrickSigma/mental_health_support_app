@@ -44,6 +44,9 @@ dependencies:
   prompt_dialog: ^1.0.17
   just_audio: ^0.10.4
   intl: ^0.18.1
+  zego_zim: ^2.4.0
+  zego_express_engine: ^3.4.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:

@@ -6,7 +6,6 @@ import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
 import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientApp extends StatefulWidget {
   const PatientApp({super.key});
