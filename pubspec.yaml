@@ -44,6 +44,7 @@ dependencies:
   prompt_dialog: ^1.0.17
   just_audio: ^0.10.4
   intl: ^0.18.1
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:

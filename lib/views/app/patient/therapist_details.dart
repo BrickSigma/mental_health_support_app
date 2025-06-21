@@ -4,8 +4,9 @@ import 'package:mental_health_support_app/views/app/patient/book_session.dart';
 
 class TherapistDetails extends StatelessWidget {
   final String therapistId;
+  final String patientId;
 
-  const TherapistDetails({super.key, required this.therapistId});
+  const TherapistDetails({super.key, required this.therapistId, required this.patientId});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class TherapistDetails extends StatelessWidget {
             icon: const Icon(Icons.swap_horiz),
             tooltip: 'Change Therapist',
             onPressed: () {
-              //TODO:Change therapist
+              //TODO:Changetherapist
             },
           ),
         ],
@@ -103,7 +104,14 @@ class TherapistDetails extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => BookSession()),
+                        MaterialPageRoute(
+                          builder:
+                              (context) => BookSession(
+                                therapistId: therapistId,
+                                therapistName: username,
+                                patientId: patientId,
+                              ),
+                        ),
                       );
                     },
                     child: const Text(
