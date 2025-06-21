@@ -130,8 +130,6 @@ class _FindTherapistState extends State<FindTherapist> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                filled: true,
-                fillColor: Colors.grey[200],
               ),
               onChanged:
                   (value) => setState(() => _searchQuery = value.toLowerCase()),
