@@ -103,7 +103,11 @@ class TherapistDetails extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => BookSession()),
+                        MaterialPageRoute(builder: (context) => BookSession(
+                          therapistId: therapistId,
+                          therapistName: username,
+                        )
+                        ),
                       );
                     },
                     child: const Text(
