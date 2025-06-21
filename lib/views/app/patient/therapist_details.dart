@@ -18,7 +18,7 @@ class TherapistDetails extends StatelessWidget {
             icon: const Icon(Icons.swap_horiz),
             tooltip: 'Change Therapist',
             onPressed: () {
-              //TODO:Change therapist
+              //TODO:Changetherapist
             },
           ),
         ],
