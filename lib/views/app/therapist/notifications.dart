@@ -203,14 +203,14 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
                   Icon(
                     Icons.inbox,
                     size: 64,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(context).colorScheme.primary.withAlpha(75),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No pending requests',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(155),
                     ),
                   ),
                 ],

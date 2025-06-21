@@ -160,14 +160,14 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                   Icon(
                     Icons.notifications_off,
                     size: 64,
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    color: Theme.of(context).colorScheme.primary.withAlpha(75),
                   ),
                   const SizedBox(height: 16),
                   Text(
                     'No notifications yet',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(155),
                     ),
                   ),
                 ],
@@ -190,13 +190,13 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: BorderSide(
-                    color: Theme.of(context).dividerColor.withOpacity(0.1),
+                    color: Theme.of(context).dividerColor.withAlpha(25),
                     width: 1,
                   ),
                 ),
                 color: isRead
                     ? null
-                    : Theme.of(context).colorScheme.primary.withOpacity(0.05),
+                    : Theme.of(context).colorScheme.primary.withAlpha(15),
                 child: ListTile(
                   leading: _buildNotificationIcon(data['type']),
                   title: Text(
