@@ -16,7 +16,7 @@ class _TherapistAppState extends State<TherapistApp> {
   final List<Widget> _pages = [
     const TherapistHomePage(),
     const Appointments(),
-    const Profile(),
+    const ProfilePage(),
   ];
 
   @override
