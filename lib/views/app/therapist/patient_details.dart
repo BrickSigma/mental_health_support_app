@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mental_health_support_app/models/patient_model.dart';
 
 class PatientDetails extends StatelessWidget {
   final String patientId;
