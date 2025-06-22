@@ -6,11 +6,7 @@ class TherapistDetails extends StatelessWidget {
   final String therapistId;
   final String patientId;
 
-  const TherapistDetails({
-    super.key,
-    required this.therapistId,
-    required this.patientId,
-  });
+  const TherapistDetails({super.key, required this.therapistId, required this.patientId});
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +25,10 @@ class TherapistDetails extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<DocumentSnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collection('therapists')
-                .doc(therapistId)
-                .snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('therapists')
+            .doc(therapistId)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -65,6 +60,7 @@ class TherapistDetails extends StatelessWidget {
                       username.isNotEmpty ? username[0].toUpperCase() : '?',
                       style: const TextStyle(
                         fontSize: 36,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -92,6 +88,26 @@ class TherapistDetails extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
+                // Video Call Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    icon: const Icon(Icons.video_call),
+                    label: const Text('Start Video Call'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    onPressed: () {
+                      //TODO
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
                 const Spacer(),
 
                 // Book Session Button
@@ -108,12 +124,11 @@ class TherapistDetails extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder:
-                              (context) => BookSession(
-                                therapistId: therapistId,
-                                therapistName: username,
-                                patientId: patientId,
-                              ),
+                          builder: (context) => BookSession(
+                            therapistId: therapistId,
+                            therapistName: username,
+                            patientId: patientId,
+                          ),
                         ),
                       );
                     },
@@ -131,7 +146,6 @@ class TherapistDetails extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
