@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/views/app/patient/notifications.dart';
 import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_analysis_form.dart';
+import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_form_report.dart';
 import 'package:provider/provider.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 
@@ -137,7 +138,16 @@ class SentimentAnalysisSection extends StatelessWidget {
                 ),
                 if (patientModel.dassModel.value != null)
                   FilledButton(
-                    onPressed: () {},
+                    onPressed:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => SentimentFormReportPage(
+                                  patientModel.userInfo!.uid,
+                                ),
+                          ),
+                        ),
                     child: Text("View form history"),
                   ),
               ],
