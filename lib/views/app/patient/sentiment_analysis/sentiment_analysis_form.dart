@@ -23,39 +23,7 @@ class SentimentAnalysisForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<QuestionModel> questions = [
-      QuestionModel("I found it hard to wind down"),
-      QuestionModel("I was aware of dryness of my mouth"),
-      QuestionModel(
-        "I couldn't seem to experience any positive feeling at all",
-      ),
-      QuestionModel(
-        "I experienced breathing difficulty (e.g. excessively rapid breathing, breathlessness in the absence of physical exertion)",
-      ),
-      QuestionModel(
-        "I found it difficult to work up the initiative to do things",
-      ),
-      QuestionModel("I tended to over-react to situations"),
-      QuestionModel("I experienced trembling (e.g. in the hands)"),
-      QuestionModel("I felt that I was using a lot of nervous energy"),
-      QuestionModel(
-        "I was worried about situations in which I might panic and make a fool of myself",
-      ),
-      QuestionModel("I felt that I had nothing to look forward to"),
-      QuestionModel("I found myself getting agitated"),
-      QuestionModel("I found it difficult to relax"),
-      QuestionModel("I felt down-hearted and blue"),
-      QuestionModel(
-        "I was intolerant of anything that kept me from getting on with what I was doing",
-      ),
-      QuestionModel("I felt I was close to panic"),
-      QuestionModel("I was unable to become enthusiastic about anything"),
-      QuestionModel("I felt I wasn't worth much as a person"),
-      QuestionModel("I felt that I was rather touchy"),
-      QuestionModel(
-        "I was aware of the action of my heart in the absence of physical exertion (e.g. sense of heart rate increase, heart missing a beat)",
-      ),
-      QuestionModel("I felt scared without any good reason"),
-      QuestionModel("I felt that life was meaningless"),
+      for (String question in dassQuestions) QuestionModel(question),
     ];
 
     return Scaffold(
@@ -74,18 +42,6 @@ class SentimentAnalysisForm extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class QuestionModel extends ChangeNotifier {
-  final String title;
-  int score = 0;
-
-  QuestionModel(this.title);
-
-  void setScore(int score) {
-    this.score = score;
-    notifyListeners();
   }
 }
 

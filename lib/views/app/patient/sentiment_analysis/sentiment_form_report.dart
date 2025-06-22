@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mental_health_support_app/models/dass_model.dart';
+import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_analysis_form_view.dart';
 
 class SentimentFormReportPage extends StatefulWidget {
   const SentimentFormReportPage(this.patientID, {super.key});
@@ -173,6 +174,15 @@ class SentimentFormReport extends StatelessWidget {
                 shrinkWrap: true,
                 itemBuilder:
                     (context, index) => ListTile(
+                      onTap:
+                          () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) =>
+                                      SentimentAnalysisFormView(forms[index]),
+                            ),
+                          ),
                       title: Text(forms[index].timeFilledIn.toString()),
                       trailing: Icon(Icons.arrow_forward_ios),
                     ),
