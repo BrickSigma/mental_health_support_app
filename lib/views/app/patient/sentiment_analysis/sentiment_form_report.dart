@@ -5,9 +5,9 @@ import 'package:mental_health_support_app/models/dass_model.dart';
 import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_analysis_form_view.dart';
 
 class SentimentFormReportPage extends StatefulWidget {
-  const SentimentFormReportPage(this.patientID, {super.key});
+  const SentimentFormReportPage(this.patientId, {super.key});
 
-  final String patientID;
+  final String patientId;
 
   @override
   State<SentimentFormReportPage> createState() =>
@@ -22,7 +22,7 @@ class _SentimentFormReportPageState extends State<SentimentFormReportPage> {
     QuerySnapshot querySnapshot =
         await db
             .collection("patients")
-            .doc(widget.patientID)
+            .doc(widget.patientId)
             .collection("sentimentForms")
             .orderBy("timeFilledIn", descending: true)
             .get();

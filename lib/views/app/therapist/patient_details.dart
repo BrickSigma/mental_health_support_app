@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_form_report.dart';
 
 class PatientDetails extends StatelessWidget {
   final String patientId;
@@ -26,10 +27,11 @@ class PatientDetails extends StatelessWidget {
         ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('patients')
-            .doc(patientId)
-            .get(),
+        future:
+            FirebaseFirestore.instance
+                .collection('patients')
+                .doc(patientId)
+                .get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -75,7 +77,12 @@ class PatientDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailCard(BuildContext context, String username, String email, String assignedTherapistId) {
+  Widget _buildDetailCard(
+    BuildContext context,
+    String username,
+    String email,
+    String assignedTherapistId,
+  ) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -109,16 +116,34 @@ class PatientDetails extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, String patientId, String therapistId) {
+  Widget _buildActionButtons(
+    BuildContext context,
+    String patientId,
+    String therapistId,
+  ) {
     return Column(
       children: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            child: const Text('View Sentiment Analysis Report'),
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SentimentFormReportPage(patientId),
+                  ),
+                ),
+          ),
+        ),
+        const SizedBox(height: 10),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
             icon: const Icon(Icons.video_call),
             label: const Text('Start Video Session'),
             onPressed: () {
-             //TODO
+              //TODO
             },
           ),
         ),
