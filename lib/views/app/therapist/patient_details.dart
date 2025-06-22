@@ -17,14 +17,6 @@ class PatientDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Patient Details'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.chat),
-            onPressed: () {
-              // TODO: Implement chat functionality
-            },
-          ),
-        ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future:
@@ -144,17 +136,6 @@ class PatientDetails extends StatelessWidget {
             label: const Text('Start Video Session'),
             onPressed: () {
               //TODO
-            },
-          ),
-        ),
-        const SizedBox(height: 10),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            icon: const Icon(Icons.note_add),
-            label: const Text('Add Session Notes'),
-            onPressed: () {
-              // TODO: Implement session notes functionality
             },
           ),
         ),
