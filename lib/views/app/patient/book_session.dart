@@ -118,7 +118,7 @@ class _BookSessionState extends State<BookSession> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Book with ${widget.therapistName}')),
+      appBar: AppBar(title: Text('Book Session')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

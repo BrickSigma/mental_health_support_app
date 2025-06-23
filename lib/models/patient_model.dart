@@ -35,7 +35,7 @@ class PatientModel extends ChangeNotifier implements UserInterface {
     await patientRef.set({
       "username": userName,
       "email": email,
-      "assignedTherapistId": "",
+      "assignedTherapistId": null,
       "createdAt": FieldValue.serverTimestamp(),
     });
 

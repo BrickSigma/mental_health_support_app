@@ -58,16 +58,13 @@ class TherapistDetails extends StatelessWidget {
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
-    
       await _deleteFutureSessions();
 
-      
       await FirebaseFirestore.instance
           .collection('patients')
           .doc(patientId)
           .update({'assignedTherapistId': FieldValue.delete()});
 
-      
       await FirebaseFirestore.instance
           .collection('patients')
           .doc(patientId)
@@ -100,6 +97,18 @@ class TherapistDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (therapistId.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Therapist Details')),
+        body: const Center(
+          child: Text(
+            'No therapist selected',
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Therapist Details'),
@@ -120,11 +129,31 @@ class TherapistDetails extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Text(
+                'Error loading therapist details',
+              ),
+            );
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return const Center(child: Text('Therapist not found'));
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.person_off, size: 48, color: Colors.grey),
+                  SizedBox(height: 16),
+                  Text(
+                    'No therapist available',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                  Text(
+                    'Please request a new therapist',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ],
+              ),
+            );
           }
 
           final therapist = snapshot.data!.data() as Map<String, dynamic>;
