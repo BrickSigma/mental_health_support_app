@@ -14,12 +14,28 @@ class TherapistDetails extends StatelessWidget {
     this.onTherapistChanged,
   });
 
+  Future<void> _deleteFutureSessions() async {
+    final now = DateTime.now();
+    final sessionsSnapshot = await FirebaseFirestore.instance
+        .collection('sessions')
+        .where('patientId', isEqualTo: patientId)
+        .where('therapistId', isEqualTo: therapistId)
+        .where('dateTime', isGreaterThan: now)
+        .get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    for (var doc in sessionsSnapshot.docs) {
+      batch.delete(doc.reference);
+    }
+    await batch.commit();
+  }
+
   Future<void> _changeTherapist(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Change Therapist'),
-        content: const Text('This will remove your current therapist. You can request a new one.'),
+        content: const Text('This will remove your current therapist and cancel any future sessions. You can request a new one.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -42,11 +58,16 @@ class TherapistDetails extends StatelessWidget {
         builder: (context) => const Center(child: CircularProgressIndicator()),
       );
 
+    
+      await _deleteFutureSessions();
+
+      
       await FirebaseFirestore.instance
           .collection('patients')
           .doc(patientId)
           .update({'assignedTherapistId': FieldValue.delete()});
 
+      
       await FirebaseFirestore.instance
           .collection('patients')
           .doc(patientId)
@@ -64,7 +85,7 @@ class TherapistDetails extends StatelessWidget {
           onTherapistChanged!();
         }
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Therapist removed successfully')),
+          const SnackBar(content: Text('Therapist removed and future sessions cancelled')),
         );
       }
     } catch (e) {
