@@ -4,9 +4,14 @@ import 'package:mental_health_support_app/views/app/patient/homepage.dart';
 import 'package:mental_health_support_app/views/app/patient/journaling/journal.dart';
 import 'package:mental_health_support_app/views/app/patient/meditation.dart';
 import 'package:mental_health_support_app/views/app/patient/profile_page.dart';
+import 'package:mental_health_support_app/views/app/patient/therapist_details.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientApp extends StatefulWidget {
-  const PatientApp({super.key});
+  final int initialIndex;
+  
+  const PatientApp({super.key, this.initialIndex = 0});
 
   @override
   State<PatientApp> createState() => _PatientAppState();
@@ -14,23 +19,73 @@ class PatientApp extends StatefulWidget {
 
 class _PatientAppState extends State<PatientApp> {
   int _pageIndex = 0;
-  final List<Widget> _pages = [
-    PatientHomePage(),
-    MeditationPage(),
-    FindTherapist(),
-    Journal(),
-    ProfilePage(),
-  ];
+  String? _assignedTherapistId;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageIndex = widget.initialIndex;
+    _checkAssignedTherapist();
+  }
+
+  Future<void> _checkAssignedTherapist() async {
+    setState(() => _isLoading = true);
+    final patient = _auth.currentUser;
+    if (patient == null) return;
+
+    try {
+      final patientDoc = await _firestore.collection('patients').doc(patient.uid).get();
+      if (patientDoc.exists) {
+        final data = patientDoc.data() as Map<String, dynamic>;
+        setState(() {
+          _assignedTherapistId = data['assignedTherapistId'];
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error checking assigned therapist: $e');
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_pageIndex],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : IndexedStack(
+              index: _pageIndex,
+              children: [
+                const PatientHomePage(),
+                const MeditationPage(),
+                _assignedTherapistId != null
+                    ? TherapistDetails(
+                        therapistId: _assignedTherapistId!,
+                        patientId: _auth.currentUser?.uid ?? '',
+                        onTherapistChanged: () {
+                          setState(() {
+                            _assignedTherapistId = null;
+                          });
+                          _checkAssignedTherapist();
+                        },
+                      )
+                    : FindTherapist(
+                        onTherapistChanged: () {
+                          _checkAssignedTherapist();
+                        },
+                      ),
+                const Journal(),
+                const ProfilePage(),
+              ],
+            ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _pageIndex,
-        onTap:
-            (value) => setState(() {
-              _pageIndex = value;
-            }),
+        onTap: (value) => setState(() {
+          _pageIndex = value;
+        }),
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
