@@ -174,7 +174,6 @@ class TherapistDetails extends StatelessWidget {
                       username.isNotEmpty ? username[0].toUpperCase() : '?',
                       style: const TextStyle(
                         fontSize: 36,
-                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -185,7 +184,7 @@ class TherapistDetails extends StatelessWidget {
                   child: Text(username, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 ),
                 Center(
-                  child: Text(specialty, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
+                  child: Text(specialty, style: TextStyle(fontSize: 16,)),
                 ),
                 const SizedBox(height: 30),
                 Card(

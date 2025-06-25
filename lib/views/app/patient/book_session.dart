@@ -25,6 +25,13 @@ class _BookSessionState extends State<BookSession> {
   int _selectedDuration = 30;
   final TextEditingController _topicController = TextEditingController();
   final List<int> _durationOptions = [30, 45, 60, 90];
+  
+  final Map<int, int> _durationCosts = {
+    30: 200,
+    45: 250,
+    60: 350,
+    90: 450,
+  };
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -38,23 +45,93 @@ class _BookSessionState extends State<BookSession> {
     }
   }
 
-  Future<void> _bookSession(BuildContext context) async {
-    if (_topicController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a topic for your session')),
-      );
-      return;
-    }
+  Future<void> _showPhoneNumberDialog(BuildContext context) async {
+    final TextEditingController phoneController = TextEditingController();
+    
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Phone Number'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Enter your phone number to complete booking'),
+              const SizedBox(height: 16),
+              TextField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  hintText: '+254712345678',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.phone),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Booking cancelled')),
+                );
+                _topicController.clear();
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (phoneController.text.trim().isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter your phone number')),
+                  );
+                  return;
+                }
+                
+                bool? confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Confirm Payment'),
+                      content: Text('Confirm payment of ${_durationCosts[_selectedDuration]} KSh?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            _topicController.clear();
+                            Navigator.of(context).pop(false);
+                          },
+                          child: const Text('No'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            _topicController.clear();
+                            Navigator.of(context).pop(true);
+                          },
+                          child: const Text('Yes'),
+                        ),
+                      ],
+                    );
+                  },
+                );
 
+                if (confirm == true) {
+                  Navigator.of(context).pop();
+                  _confirmBooking(context, phoneController.text.trim());
+                }
+              },
+              child: const Text('Confirm Booking'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmBooking(BuildContext context, String phoneNumber) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You must be logged in to book a session'),
-        ),
-      );
-      return;
-    }
+    if (user == null) return;
 
     final DateTime sessionDateTime = DateTime(
       _selectedDate.year,
@@ -66,16 +143,12 @@ class _BookSessionState extends State<BookSession> {
 
     try {
       final sessionsRef = FirebaseFirestore.instance.collection('sessions');
-      final patientDoc =
-          await FirebaseFirestore.instance
-              .collection('patients')
-              .doc(user.uid)
-              .get();
+      final patientDoc = await FirebaseFirestore.instance
+          .collection('patients')
+          .doc(user.uid)
+          .get();
 
-      final patientName =
-          patientDoc.exists == true
-              ? (patientDoc.data()?['username'] ?? 'Patient')
-              : 'Patient';
+      final patientName = patientDoc.exists ? (patientDoc.data()?['username'] ?? 'Patient') : 'Patient';
 
       await sessionsRef.add({
         'therapistId': widget.therapistId,
@@ -83,8 +156,10 @@ class _BookSessionState extends State<BookSession> {
         'patientId': user.uid,
         'patientName': patientName,
         'patientEmail': user.email,
+        'patientPhone': phoneNumber,
         'dateTime': sessionDateTime,
         'duration': _selectedDuration,
+        'cost': _durationCosts[_selectedDuration],
         'topic': _topicController.text,
         'status': 'pending',
         'createdAt': FieldValue.serverTimestamp(),
@@ -97,7 +172,6 @@ class _BookSessionState extends State<BookSession> {
             content: Text('Session booked with ${widget.therapistName}'),
           ),
         );
-
         Navigator.pop(context);
       }
     } catch (e) {
@@ -118,7 +192,7 @@ class _BookSessionState extends State<BookSession> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Book Session')),
+      appBar: AppBar(title: const Text('Book Session')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -176,18 +250,31 @@ class _BookSessionState extends State<BookSession> {
             const SizedBox(height: 10),
             Wrap(
               spacing: 8,
-              children:
-                  _durationOptions.map((duration) {
-                    return ChoiceChip(
-                      label: Text('$duration min'),
-                      selected: _selectedDuration == duration,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedDuration = duration;
-                        });
-                      },
-                    );
-                  }).toList(),
+              children: _durationOptions.map((duration) {
+                return ChoiceChip(
+                  label: Text('$duration min'),
+                  selected: _selectedDuration == duration,
+                  onSelected: (selected) => setState(() => _selectedDuration = duration),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    'Cost: ${_durationCosts[_selectedDuration]} KSh',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -206,12 +293,9 @@ class _BookSessionState extends State<BookSession> {
             const SizedBox(height: 30),
             Center(
               child: ElevatedButton(
-                onPressed: () => _bookSession(context),
+                onPressed: () => _showPhoneNumberDialog(context),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 10,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
                   backgroundColor: Colors.blue,
                 ),
                 child: const Text(

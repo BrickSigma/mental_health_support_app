@@ -159,6 +159,7 @@ class _PatientHomePageState extends State<PatientHomePage> {
                                   'Duration: $duration minutes',
                                   style: const TextStyle(fontSize: 14),
                                 ),
+                                
                                 const SizedBox(height: 8),
                                 Align(
                                   alignment: Alignment.centerRight,
