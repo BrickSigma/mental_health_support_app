@@ -99,14 +99,12 @@ class _BookSessionState extends State<BookSession> {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            _topicController.clear();
                             Navigator.of(context).pop(false);
                           },
                           child: const Text('No'),
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            _topicController.clear();
                             Navigator.of(context).pop(true);
                           },
                           child: const Text('Yes'),

@@ -27,21 +27,50 @@ class _PatientsNotificationState extends State<PatientsNotification> {
         .update({'read': true});
   }
 
+  Future<void> _deleteNotification(String notificationId) async {
+    final patientId = _auth.currentUser?.uid;
+    if (patientId == null) return;
+
+    await _firestore
+        .collection('patients')
+        .doc(patientId)
+        .collection('notifications')
+        .doc(notificationId)
+        .delete();
+  }
+
   Future<void> _markAllAsRead() async {
     final patientId = _auth.currentUser?.uid;
     if (patientId == null) return;
 
-    final querySnapshot =
-        await _firestore
-            .collection('patients')
-            .doc(patientId)
-            .collection('notifications')
-            .where('read', isEqualTo: false)
-            .get();
+    final querySnapshot = await _firestore
+        .collection('patients')
+        .doc(patientId)
+        .collection('notifications')
+        .where('read', isEqualTo: false)
+        .get();
 
     final batch = _firestore.batch();
     for (final doc in querySnapshot.docs) {
       batch.update(doc.reference, {'read': true});
+    }
+    await batch.commit();
+  }
+
+  Future<void> _deleteAllReadNotifications() async {
+    final patientId = _auth.currentUser?.uid;
+    if (patientId == null) return;
+
+    final querySnapshot = await _firestore
+        .collection('patients')
+        .doc(patientId)
+        .collection('notifications')
+        .where('read', isEqualTo: true)
+        .get();
+
+    final batch = _firestore.batch();
+    for (final doc in querySnapshot.docs) {
+      batch.delete(doc.reference);
     }
     await batch.commit();
   }
@@ -80,6 +109,35 @@ class _PatientsNotificationState extends State<PatientsNotification> {
     }
   }
 
+  void _showDeleteConfirmationDialog(
+      BuildContext context, String notificationId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Delete Notification'),
+          content: const Text('Are you sure you want to delete this notification?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                _deleteNotification(notificationId);
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Notification deleted')),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final patientId = _auth.currentUser?.uid;
@@ -107,21 +165,35 @@ class _PatientsNotificationState extends State<PatientsNotification> {
       appBar: AppBar(
         title: const Text('Notifications'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.done_all),
-            tooltip: 'Mark all as read',
-            onPressed: _markAllAsRead,
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.more_vert),
+            onSelected: (value) {
+              if (value == 'mark_all_read') {
+                _markAllAsRead();
+              } else if (value == 'delete_read') {
+                _deleteAllReadNotifications();
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'mark_all_read',
+                child: Text('Mark all as read'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'delete_read',
+                child: Text('Delete all read notifications'),
+              ),
+            ],
           ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream:
-            _firestore
-                .collection('patients')
-                .doc(patientId)
-                .collection('notifications')
-                .orderBy('timestamp', descending: true)
-                .snapshots(),
+        stream: _firestore
+            .collection('patients')
+            .doc(patientId)
+            .collection('notifications')
+            .orderBy('timestamp', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(
@@ -178,9 +250,7 @@ class _PatientsNotificationState extends State<PatientsNotification> {
                     'No notifications yet',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withAlpha(155),
+                      color: Theme.of(context).colorScheme.onSurface.withAlpha(155),
                     ),
                   ),
                 ],
@@ -197,51 +267,91 @@ class _PatientsNotificationState extends State<PatientsNotification> {
               final timestamp = data['timestamp']?.toDate();
               final isRead = data['read'] ?? false;
 
-              return Card(
-                margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                elevation: 0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(
-                    color: Theme.of(context).dividerColor.withAlpha(25),
-                    width: 1,
-                  ),
+              return Dismissible(
+                key: Key(notification.id),
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
                 ),
-                color:
-                    isRead
-                        ? null
-                        : Theme.of(context).colorScheme.primary.withAlpha(15),
-                child: ListTile(
-                  leading: _buildNotificationIcon(data['type']),
-                  title: Text(
-                    data['title'] ?? 'Notification',
-                    style: TextStyle(
-                      fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                confirmDismiss: (direction) async {
+                  return await showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Confirm'),
+                        content: const Text('Are you sure you want to delete this notification?'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                onDismissed: (direction) {
+                  _deleteNotification(notification.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Notification deleted')),
+                  );
+                },
+                child: Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(
+                      color: Theme.of(context).dividerColor.withAlpha(25),
+                      width: 1,
                     ),
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(data['message'] ?? ''),
-                      if (timestamp != null)
-                        Text(
-                          _dateFormat.format(timestamp),
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).hintColor,
+                  color: isRead
+                      ? null
+                      : Theme.of(context).colorScheme.primary.withAlpha(15),
+                  child: ListTile(
+                    leading: _buildNotificationIcon(data['type']),
+                    title: Text(
+                      data['title'] ?? 'Notification',
+                      style: TextStyle(
+                        fontWeight: isRead ? FontWeight.normal : FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(data['message'] ?? ''),
+                        if (timestamp != null)
+                          Text(
+                            _dateFormat.format(timestamp),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
-                        ),
-                    ],
-                  ),
-                  trailing:
-                      !isRead
-                          ? const Icon(
+                      ],
+                    ),
+                    trailing: !isRead
+                        ? const Icon(
                             Icons.circle,
                             size: 10,
                             color: Colors.blue,
                           )
-                          : null,
-                  onTap: () => _handleNotificationTap(notification, context),
+                        : IconButton(
+                            icon: const Icon(Icons.delete_outline),
+                            onPressed: () =>
+                                _showDeleteConfirmationDialog(context, notification.id),
+                          ),
+                    onTap: () => _handleNotificationTap(notification, context),
+                    onLongPress: () =>
+                        _showDeleteConfirmationDialog(context, notification.id),
+                  ),
                 ),
               );
             },
