@@ -1,16 +1,33 @@
-# mental_health_support_app
+# Mental Health Support Application 
 
-A new Flutter project.
+This is a mobile mental health support application designed for young adult patients and therapists, as part of Strathmore's Bachelors of Informatics and Computer Science CS Project Unit.
 
-## Getting Started
+## The Project Members
+This project was completed by the following students:
+- Wambaire Ian Nganga - 159799
+- Mohamed Junaid Chaudhry - 166335
 
-This project is a starting point for a Flutter application.
+The project was also supervised by **Dr. Esther Khakata**.
 
-A few resources to get you started if this is your first Flutter project:
+## Application Features
+The application has two users, each with their own set of features. These are the patients and therapists.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Patient Features
+- [ ] Finding and requesting for a therapist
+- [ ] Booking appointments with a therapist
+- [ ] Sentiment/mood analysis tracking using the DASS-21 questionnaire
+- [x] Meditation system with background soundtracks
+- [x] Journaling system
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Therapist Features
+- [ ] Viewing patient details
+- [ ] Seeing bookings with patients
+
+### Features For Both Users
+- [x] Loging in and signing up
+- [x] Basic account management (edit/delete account)
+
+## Development Tools & Frameworks
+The following development tools and frameworks were used in building the project:
+- Flutter and Dart
+- Firebase (authentication and firestore database)

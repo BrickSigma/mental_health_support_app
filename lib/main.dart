@@ -1,6 +1,5 @@
 import 'package:mental_health_support_app/firebase_options.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
-import 'package:mental_health_support_app/models/user_model.dart';
 import 'package:mental_health_support_app/views/app/app.dart';
 import 'package:mental_health_support_app/views/login/login.dart';
 import 'package:mental_health_support_app/views/login/verify_account.dart';
@@ -16,7 +15,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => LoginProvider()),
-        ChangeNotifierProvider(create: (_) => UserModel()),
       ],
       child: const MainApp(),
     ),

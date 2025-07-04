@@ -1,7 +1,8 @@
 import 'package:mental_health_support_app/controllers/auth.dart';
 import 'package:mental_health_support_app/models/login_provider.dart';
 import 'package:mental_health_support_app/views/login/forgot_password.dart';
-import 'package:mental_health_support_app/views/login/signup.dart';
+import 'package:mental_health_support_app/views/login/patient_signup.dart';
+import 'package:mental_health_support_app/views/login/therapist_signup.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -155,7 +156,7 @@ class _LoginViewState extends State<LoginView> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () => googleSignIn(context),
+                  onTap: () => googleSignIn(context, null),
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
@@ -175,13 +176,37 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(child: Divider()),
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Text("Create a new account"),
+                    ),
+                    Expanded(child: Divider()),
+                  ],
+                ),
                 TextButton(
                   onPressed:
                       () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => SignupView()),
+                        MaterialPageRoute(
+                          builder: (context) => PatientSignupView(),
+                        ),
                       ),
-                  child: Text("Don't have an account? Create a new one."),
+                  child: Text("Create a patient account"),
+                ),
+                SizedBox(height: 6,),
+                TextButton(
+                  onPressed:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TherapistSignupView(),
+                        ),
+                      ),
+                  child: Text("Create a therapist account"),
                 ),
               ],
             ),
