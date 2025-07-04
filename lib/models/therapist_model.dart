@@ -35,18 +35,6 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
       "specialty": specialty,
       "createdAt": FieldValue.serverTimestamp(),
     });
-
-    // Create patient_requests subcollection
-    await therapistRef.collection('patient_requests').doc('initial').set({
-      'status': 'empty',
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    // Create patients subcollection
-    await therapistRef.collection('patients').doc('initial').set({
-      'active': false,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
   }
 
   /// Retrieves the therapist data from firebase

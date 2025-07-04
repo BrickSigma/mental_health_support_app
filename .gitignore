@@ -53,3 +53,5 @@ app.*.map.json
 
 firebase_options.dart
 **/firebase.json
+
+stream_options.dart
