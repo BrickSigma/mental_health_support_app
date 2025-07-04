@@ -15,9 +15,8 @@ const router = Router();
 router.post('/users', async (req, res) => {
     const userId = req.query.user_id;
 
-    if (userId == undefined || userId == "") {
-        res.statusMessage = "No user id provided!"
-        res.status(400).end();
+    if (!userId) {
+        res.status(400).send({ message: 'No user ID provided!' });
         return;
     }
 
@@ -28,7 +27,7 @@ router.post('/users', async (req, res) => {
 
     try {
         await client.upsertUsers([newUser]);
-        res.send(200);
+        res.status(200).end();
     } catch (error) {
         res.statusMessage = error;
         res.status(400).end();
@@ -39,9 +38,8 @@ router.post('/users', async (req, res) => {
 router.get('/tokens', async (req, res) => {
     const userId = req.query.user_id;
 
-    if (userId == undefined || userId == "") {
-        res.statusMessage = "No user id provided!"
-        res.status(400).end();
+    if (!userId) {
+        res.status(400).send({ message: 'No user ID provided!' });
         return;
     }
 
@@ -52,24 +50,23 @@ router.get('/tokens', async (req, res) => {
 
     res.json({
         userToken: userToken
-    }).status(200);
+    }).status(200).end();
 });
 
 router.delete('/users', async (req, res) => {
     const userId = req.query.user_id;
 
-    if (userId == undefined || userId == "") {
-        res.statusMessage = "No user id provided!"
-        res.status(400).end();
+    if (!userId) {
+        res.status(400).send({ message: 'No user ID provided!' });
         return;
     }
 
     try {
-        client.deleteUsers({ user_ids: [userId], user: "hard" });
-        res.status(200);
+        await client.deleteUsers({ user_ids: [userId], user: "hard" });
+        res.status(200).end();
     } catch (error) {
         res.statusMessage = error;
-        res.status(400);
+        res.status(400).end();
     }
 });
 
