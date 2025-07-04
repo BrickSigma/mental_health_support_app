@@ -10,7 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientApp extends StatefulWidget {
   final int initialIndex;
-  
+
   const PatientApp({super.key, this.initialIndex = 0});
 
   @override
@@ -20,6 +20,7 @@ class PatientApp extends StatefulWidget {
 class _PatientAppState extends State<PatientApp> {
   int _pageIndex = 0;
   String? _assignedTherapistId;
+  String _callId = "";
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = true;
@@ -37,11 +38,13 @@ class _PatientAppState extends State<PatientApp> {
     if (patient == null) return;
 
     try {
-      final patientDoc = await _firestore.collection('patients').doc(patient.uid).get();
+      final patientDoc =
+          await _firestore.collection('patients').doc(patient.uid).get();
       if (patientDoc.exists) {
         final data = patientDoc.data() as Map<String, dynamic>;
         setState(() {
           _assignedTherapistId = data['assignedTherapistId'];
+          _callId = data["callId"];
           _isLoading = false;
         });
       }
@@ -54,16 +57,18 @@ class _PatientAppState extends State<PatientApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : IndexedStack(
-              index: _pageIndex,
-              children: [
-                const PatientHomePage(),
-                const MeditationPage(),
-                _assignedTherapistId != null
-                    ? TherapistDetails(
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : IndexedStack(
+                index: _pageIndex,
+                children: [
+                  const PatientHomePage(),
+                  const MeditationPage(),
+                  _assignedTherapistId != null
+                      ? TherapistDetails(
                         therapistId: _assignedTherapistId!,
+                        callId: _callId,
                         patientId: _auth.currentUser?.uid ?? '',
                         onTherapistChanged: () {
                           setState(() {
@@ -72,20 +77,21 @@ class _PatientAppState extends State<PatientApp> {
                           _checkAssignedTherapist();
                         },
                       )
-                    : FindTherapist(
+                      : FindTherapist(
                         onTherapistChanged: () {
                           _checkAssignedTherapist();
                         },
                       ),
-                const Journal(),
-                const ProfilePage(),
-              ],
-            ),
+                  const Journal(),
+                  const ProfilePage(),
+                ],
+              ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _pageIndex,
-        onTap: (value) => setState(() {
-          _pageIndex = value;
-        }),
+        onTap:
+            (value) => setState(() {
+              _pageIndex = value;
+            }),
         showSelectedLabels: true,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,

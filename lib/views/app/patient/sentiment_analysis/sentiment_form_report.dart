@@ -263,7 +263,7 @@ class Chart extends StatelessWidget {
               LineChartBarData(
                 spots: [
                   for (int index = 0; index < scores.length; index++)
-                    FlSpot(index.toDouble(), scores[index].toDouble()),
+                    FlSpot(index.toDouble(), scores[index]/2),
                 ],
                 isCurved: true,
                 gradient: LinearGradient(

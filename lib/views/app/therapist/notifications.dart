@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/v1.dart';
 
 class TherapistNotifications extends StatefulWidget {
   const TherapistNotifications({super.key});
@@ -96,6 +97,9 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
       });
 
       if (status == 'accepted') {
+        // Generate the call ID that will be shared betweeb the patient and therapist
+        String callId = UuidV1().generate();
+
         // Add to therapist's patients
         final therapistPatientRef = _firestore
             .collection('therapists')
@@ -107,6 +111,7 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
           'patientEmail': patientEmail,
           'acceptedAt': FieldValue.serverTimestamp(),
           'active': true,
+          'callId': callId,
         });
 
         // Add therapist to patient's therapists
@@ -123,7 +128,10 @@ class _TherapistNotificationsState extends State<TherapistNotifications> {
 
         // Update patient's assigned therapist
         final patientRef = _firestore.collection('patients').doc(patientId);
-        batch.update(patientRef, {'assignedTherapistId': therapistId});
+        batch.update(patientRef, {
+          'assignedTherapistId': therapistId,
+          'callId': callId,
+        });
       }
 
       await batch.commit();

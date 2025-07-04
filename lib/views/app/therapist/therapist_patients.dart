@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:mental_health_support_app/views/app/therapist/patient_details.dart';
+import 'package:provider/provider.dart';
 
 class TherapistPatients extends StatelessWidget {
   final String therapistId;
@@ -9,16 +11,16 @@ class TherapistPatients extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TherapistModel therapistModel = Provider.of(context, listen: false);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Patients'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('My Patients'), centerTitle: true),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('patients')
-            .where('assignedTherapistId', isEqualTo: therapistId)
-            .snapshots(),
+        stream:
+            FirebaseFirestore.instance
+                .collection('patients')
+                .where('assignedTherapistId', isEqualTo: therapistId)
+                .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -43,7 +45,9 @@ class TherapistPatients extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   leading: CircleAvatar(
-                    child: Text(patientData['username']?[0].toUpperCase() ?? '?'),
+                    child: Text(
+                      patientData['username']?[0].toUpperCase() ?? '?',
+                    ),
                   ),
                   title: Text(patientData['username'] ?? 'No Name'),
                   subtitle: Text(patientData['email'] ?? 'No Email'),
@@ -52,10 +56,12 @@ class TherapistPatients extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PatientDetails(
-                          patientId: patientId,
-                          therapistId: therapistId,
-                        ),
+                        builder:
+                            (context) => PatientDetails(
+                              patientId: patientId,
+                              therapistId: therapistId,
+                              therapistModel: therapistModel,
+                            ),
                       ),
                     );
                   },

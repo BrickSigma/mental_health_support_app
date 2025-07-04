@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/controllers/stream_api.dart';
 import 'package:mental_health_support_app/models/user_interface.dart';
 
 class TherapistModel extends ChangeNotifier implements UserInterface {
@@ -27,7 +28,7 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
   ) async {
     final db = FirebaseFirestore.instance;
     final therapistRef = db.collection(_collection).doc(uid);
-    
+
     // Create main therapist document
     await therapistRef.set({
       "username": userName,
@@ -36,17 +37,8 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
       "createdAt": FieldValue.serverTimestamp(),
     });
 
-    // Create patient_requests subcollection
-    await therapistRef.collection('patient_requests').doc('initial').set({
-      'status': 'empty',
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    // Create patients subcollection
-    await therapistRef.collection('patients').doc('initial').set({
-      'active': false,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+    // Register the user under Stream.io for video calling
+    await createStreamUser(uid);
   }
 
   /// Retrieves the therapist data from firebase
@@ -65,7 +57,7 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     _userName = data["username"] ?? currentUser.email ?? "";
     email = data["email"] ?? currentUser.email ?? "";
     specialty = data["specialty"] ?? "";
-    
+
     notifyListeners();
   }
 
@@ -89,19 +81,22 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
     final db = FirebaseFirestore.instance;
 
     db.collection(_collection).doc(userInfo?.uid).delete();
+
+    await deleteStreamUser(userInfo?.uid ?? "id");
   }
 
   /// Get patient requests for this therapist
   Future<List<Map<String, dynamic>>> getPatientRequests() async {
     if (userInfo == null) return [];
-    
-    final snapshot = await FirebaseFirestore.instance
-        .collection(_collection)
-        .doc(userInfo!.uid)
-        .collection('patient_requests')
-        .where('status', isNotEqualTo: 'empty')
-        .orderBy('timestamp', descending: true)
-        .get();
+
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection(_collection)
+            .doc(userInfo!.uid)
+            .collection('patient_requests')
+            .where('status', isNotEqualTo: 'empty')
+            .orderBy('timestamp', descending: true)
+            .get();
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
@@ -109,13 +104,14 @@ class TherapistModel extends ChangeNotifier implements UserInterface {
   /// Get accepted patients for this therapist
   Future<List<Map<String, dynamic>>> getAcceptedPatients() async {
     if (userInfo == null) return [];
-    
-    final snapshot = await FirebaseFirestore.instance
-        .collection(_collection)
-        .doc(userInfo!.uid)
-        .collection('patients')
-        .where('active', isEqualTo: true)
-        .get();
+
+    final snapshot =
+        await FirebaseFirestore.instance
+            .collection(_collection)
+            .doc(userInfo!.uid)
+            .collection('patients')
+            .where('active', isEqualTo: true)
+            .get();
 
     return snapshot.docs.map((doc) => doc.data()).toList();
   }

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/controllers/stream_api.dart';
 import 'package:mental_health_support_app/models/dass_model.dart';
 import 'package:mental_health_support_app/models/user_interface.dart';
 
@@ -10,6 +11,7 @@ class PatientModel extends ChangeNotifier implements UserInterface {
   String _userName = "";
   String email = "";
   String assignedTherapistId = "";
+  String callId = "";
 
   /// Store the most recent DASS-21 form.
   ValueNotifier<DASSModel?> dassModel = ValueNotifier(null);
@@ -36,25 +38,12 @@ class PatientModel extends ChangeNotifier implements UserInterface {
       "username": userName,
       "email": email,
       "assignedTherapistId": null,
+      "callId": null,
       "createdAt": FieldValue.serverTimestamp(),
     });
 
-    // Create notifications subcollection
-    await patientRef.collection('notifications').add({
-      "patientId": uid,
-      "read": true,
-      "status": "delivered",
-      "therapistId": "",
-      "timestamp": FieldValue.serverTimestamp(),
-      "title": "Notifications",
-      "type": "system",
-    });
-
-    // Create therapists subcollection
-    await patientRef.collection('therapists').doc('initial').set({
-      'status': 'empty',
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+    // Register the user under Stream.io for video calling
+    await createStreamUser(uid);
   }
 
   /// Retrieves the user data from firebase.
@@ -73,6 +62,7 @@ class PatientModel extends ChangeNotifier implements UserInterface {
     _userName = data["username"] ?? currentUser.email ?? "";
     email = data["email"] ?? currentUser.email ?? "";
     assignedTherapistId = data["assignedTherapistId"] ?? "";
+    callId = data["callId"] ?? "";
 
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
         await db
@@ -107,6 +97,8 @@ class PatientModel extends ChangeNotifier implements UserInterface {
     final db = FirebaseFirestore.instance;
 
     db.collection(_collection).doc(userInfo?.uid).delete();
+
+    await deleteStreamUser(userInfo?.uid ?? "id");
   }
 
   /// Load notifications for this patient
