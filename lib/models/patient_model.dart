@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mental_health_support_app/controllers/stream_api.dart';
 import 'package:mental_health_support_app/models/dass_model.dart';
 import 'package:mental_health_support_app/models/user_interface.dart';
 
@@ -40,6 +41,9 @@ class PatientModel extends ChangeNotifier implements UserInterface {
       "callId": null,
       "createdAt": FieldValue.serverTimestamp(),
     });
+
+    // Register the user under Stream.io for video calling
+    await createStreamUser(uid);
   }
 
   /// Retrieves the user data from firebase.
@@ -93,6 +97,8 @@ class PatientModel extends ChangeNotifier implements UserInterface {
     final db = FirebaseFirestore.instance;
 
     db.collection(_collection).doc(userInfo?.uid).delete();
+
+    await deleteStreamUser(userInfo?.uid ?? "id");
   }
 
   /// Load notifications for this patient

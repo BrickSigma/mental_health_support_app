@@ -50,6 +50,7 @@ dependencies:
   stream_video: ^0.8.4
   stream_video_flutter: ^0.8.2
   stream_video_push_notification: ^0.8.4
+  http: ^1.4.0
 
 dev_dependencies:
   flutter_test:

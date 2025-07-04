@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mental_health_support_app/controllers/stream_api.dart';
 import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:mental_health_support_app/stream_options.dart';
 import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_form_report.dart';
@@ -144,13 +145,18 @@ class PatientDetails extends StatelessWidget {
             onPressed: () async {
               await StreamVideo.reset();
 
+              String userToken = await getStreamUserToken(
+                therapistModel.userInfo?.uid ?? therapistModel.userName,
+              );
+
               final client = StreamVideo(
                 streamApiKey,
-                user: User.guest(
+                user: User.regular(
                   userId:
                       therapistModel.userInfo?.uid ?? therapistModel.userName,
                   name: therapistModel.userName,
                 ),
+                userToken: userToken,
               );
 
               await client.connect();

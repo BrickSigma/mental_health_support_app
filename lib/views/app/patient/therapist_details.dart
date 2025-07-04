@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mental_health_support_app/controllers/stream_api.dart';
 import 'package:mental_health_support_app/models/patient_model.dart';
 import 'package:mental_health_support_app/stream_options.dart';
 import 'package:mental_health_support_app/views/app/patient/book_session.dart';
@@ -63,11 +64,14 @@ class TherapistDetails extends StatelessWidget {
     if (confirmed != true) return;
 
     try {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()),
-      );
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder:
+              (context) => const Center(child: CircularProgressIndicator()),
+        );
+      }
 
       await _deleteFutureSessions();
 
@@ -233,15 +237,22 @@ class TherapistDetails extends StatelessWidget {
                         ),
                         onPressed: () async {
                           await StreamVideo.reset();
-                          
+
+                          String userToken = await getStreamUserToken(
+                            patientModel.userInfo?.uid ?? patientModel.userName,
+                          );
+
+                          print(userToken);
+
                           final client = StreamVideo(
                             streamApiKey,
-                            user: User.guest(
+                            user: User.regular(
                               userId:
                                   patientModel.userInfo?.uid ??
                                   patientModel.userName,
                               name: patientModel.userName,
                             ),
+                            userToken: userToken,
                           );
 
                           await client.connect();
