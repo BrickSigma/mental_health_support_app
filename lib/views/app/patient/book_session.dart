@@ -116,7 +116,7 @@ class _BookSessionState extends State<BookSession> {
                   },
                 );
 
-                if (confirm == true) {
+                if (confirm == true && context.mounted) {
                   Navigator.of(context).pop();
                   _confirmBooking(context, phoneController.text.trim());
                 }

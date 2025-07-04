@@ -5,23 +5,22 @@ import 'package:mental_health_support_app/models/therapist_model.dart';
 import 'package:mental_health_support_app/stream_options.dart';
 import 'package:mental_health_support_app/views/app/patient/sentiment_analysis/sentiment_form_report.dart';
 import 'package:mental_health_support_app/views/components/call_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:stream_video/stream_video.dart' hide ConnectionState;
 
 class PatientDetails extends StatelessWidget {
   final String patientId;
   final String therapistId;
+  final TherapistModel therapistModel;
 
   const PatientDetails({
     super.key,
     required this.patientId,
     required this.therapistId,
+    required this.therapistModel,
   });
 
   @override
   Widget build(BuildContext context) {
-    TherapistModel therapistModel = Provider.of(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(title: const Text('Patient Details')),
       body: FutureBuilder<DocumentSnapshot>(

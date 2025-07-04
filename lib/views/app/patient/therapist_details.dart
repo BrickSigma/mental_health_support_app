@@ -242,8 +242,6 @@ class TherapistDetails extends StatelessWidget {
                             patientModel.userInfo?.uid ?? patientModel.userName,
                           );
 
-                          print(userToken);
-
                           final client = StreamVideo(
                             streamApiKey,
                             user: User.regular(
