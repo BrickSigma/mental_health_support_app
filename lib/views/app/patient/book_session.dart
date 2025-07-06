@@ -312,6 +312,10 @@ class _BookSessionState extends State<BookSession> {
                     }
                     _showPhoneNumberDialog(context);
                   },
+                  style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                  backgroundColor: Colors.blue,
+                ),
                   child: const Text(
                     'Book Session',
                     style: TextStyle(fontSize: 18, color: Colors.white),
