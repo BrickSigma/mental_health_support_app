@@ -13,15 +13,15 @@ The project was also supervised by **Dr. Esther Khakata**.
 The application has two users, each with their own set of features. These are the patients and therapists.
 
 ### Patient Features
-- [ ] Finding and requesting for a therapist
-- [ ] Booking appointments with a therapist
-- [ ] Sentiment/mood analysis tracking using the DASS-21 questionnaire
+- [x] Finding and requesting for a therapist
+- [x] Booking appointments with a therapist
+- [x] Sentiment/mood analysis tracking using the DASS-21 questionnaire
 - [x] Meditation system with background soundtracks
 - [x] Journaling system
 
 ### Therapist Features
-- [ ] Viewing patient details
-- [ ] Seeing bookings with patients
+- [x] Viewing patient details
+- [x] Seeing bookings with patients
 
 ### Features For Both Users
 - [x] Loging in and signing up

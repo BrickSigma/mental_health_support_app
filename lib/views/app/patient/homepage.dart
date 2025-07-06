@@ -371,8 +371,7 @@ class SentimentAnalysisSection extends StatelessWidget {
                 ),
               ),
             const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Column(
               children: [
                 FilledButton(
                   onPressed: () => Navigator.push(
