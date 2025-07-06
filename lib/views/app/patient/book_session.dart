@@ -63,10 +63,12 @@ class _BookSessionState extends State<BookSession> {
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
                 decoration: const InputDecoration(
-                  hintText: '+254712345678',
+                  hintText: '712345678',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.phone),
+                  prefixText: '+254 ',
                 ),
+                maxLength: 9,
               ),
             ],
           ),
@@ -83,12 +85,22 @@ class _BookSessionState extends State<BookSession> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (phoneController.text.trim().isEmpty) {
+                final digits = phoneController.text.trim();
+                if (digits.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Please enter your phone number')),
                   );
                   return;
                 }
+
+                if (digits.length != 9 || !RegExp(r'^[0-9]{9}$').hasMatch(digits)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please enter a valid phone number')),
+                  );
+                  return;
+                }
+                
+                final phoneNumber = '+254$digits';
                 
                 bool? confirm = await showDialog<bool>(
                   context: context,
@@ -116,7 +128,7 @@ class _BookSessionState extends State<BookSession> {
 
                 if (confirm == true && context.mounted) {
                   Navigator.of(context).pop();
-                  _confirmBooking(context, phoneController.text.trim());
+                  _confirmBooking(context, phoneNumber);
                 }
               },
               child: const Text('Confirm Booking'),
